@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>貝貝早安</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik+Bubbles&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        :root {
+            /* 🍬 馬卡龍甜點配色 🍬 */
+            --macaron-pink: #ffc8dd;   /* 草莓牛奶 */
+            --macaron-blue: #aed9e0;   /* 寶寶粉藍 */
+            --macaron-green: #b7e4c7;  /* 薄荷綠 */
+            --macaron-yellow: #fbf8cc; /* 檸檬奶油 */
+            --macaron-purple: #dcd3ff; /* 薰衣草 */
+            --macaron-cream: #fffdf9;  /* 鮮奶油底色 */
+            --text-dark: #5d4e6d;      /* 溫柔的深紫色文字 */
+            
+            --font-main: 'ZCOOL KuaiLe', cursive; 
+            --font-en: 'Rubik Bubbles', cursive; 
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--macaron-cream);
+            /* 夢幻棉花糖背景 + 彩色糖珠 */
+            background-image: 
+                radial-gradient(circle at 10% 20%, var(--macaron-pink) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, var(--macaron-blue) 0%, transparent 20%),
+                radial-gradient(circle at 50% 50%, var(--macaron-yellow) 0%, transparent 15%),
+                radial-gradient(#ff9aa2 2px, transparent 2px), radial-gradient(#c7ceff 2px, transparent 2px);
+            background-size: 100% 100%, 100% 100%, 100% 100%, 50px 50px, 70px 70px;
+            background-position: 0 0, 0 0, 0 0, 0 0, 25px 25px;
+            
+            color: var(--text-dark);
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding-bottom: calc(20px + env(safe-area-inset-bottom));
+        }
+
+        header { 
+            margin-bottom: 10px; text-align: center; display: flex; flex-direction: column; align-items: center;
+        }
+        .header-title-row { display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .sun-mascot-small { width: 55px; height: 55px; animation: spin-slow 12s linear infinite; filter: drop-shadow(0 2px 4px rgba(255, 200, 221, 0.5)); }
+
+        h1 {
+            color: var(--text-dark);
+            margin: 5px 0;
+            font-size: 2.5rem;
+            /* 像糖霜一樣的文字邊框 */
+            text-shadow: 2px 2px 0px var(--macaron-cream), 4px 4px 0px var(--macaron-pink);
+            letter-spacing: 2px;
+        }
+
+        #clock {
+            font-family: var(--font-en); font-size: 1.4rem;
+            color: var(--text-dark);
+            background: rgba(255,255,255,0.8);
+            padding: 5px 15px; border-radius: 25px;
+            display: inline-block;
+            border: 3px solid var(--macaron-blue);
+            box-shadow: 0 4px 0 var(--macaron-pink);
+        }
+
+        /* 星星計數器 - 像個檸檬塔 */
+        .star-display {
+            background: var(--macaron-yellow);
+            padding: 8px 25px; border-radius: 60px;
+            box-shadow: 0 6px 0 #eadd78, 0 10px 15px rgba(255, 200, 221, 0.3);
+            margin: 15px 0; display: flex; align-items: center;
+            font-size: 2.2rem;
+            border: 5px solid var(--macaron-cream);
+            color: #ff9aa2;
+            transform: rotate(-3deg);
+        }
+        .star-display span { font-family: var(--font-en); }
+        .star-icon { margin-right: 10px; filter: drop-shadow(0 2px 0 rgba(0,0,0,0.1)); }
+
+        /* 遊戲卡片 - 軟綿綿的糖霜餅乾 */
+        .game-card {
+            background: var(--macaron-cream);
+            padding: 25px 20px;
+            border-radius: 40px;
+            width: 100%; max-width: 450px;
+            display: flex; flex-direction: column; align-items: center;
+            /* 雙層糖霜邊框 */
+            border: 8px solid var(--macaron-blue);
+            outline: 5px solid var(--macaron-cream);
+            box-shadow: 0 12px 0 #92cdd6, 0 20px 25px rgba(174, 217, 224, 0.4);
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .level-sticker-container { height: 140px; display: flex; align-items: center; justify-content: center; margin: 5px 0; }
+        .svg-icon { width: 130px; height: 130px; filter: drop-shadow(0 6px 0 rgba(174, 217, 224, 0.2)); animation: bounce 2.5s infinite ease-in-out; }
+        .level-sticker { font-size: 6.5rem; line-height: 1; filter: drop-shadow(0 5px 0 rgba(174, 217, 224, 0.2)); animation: bounce 2.5s infinite ease-in-out; }
+        .blue-bag { filter: hue-rotate(210deg) drop-shadow(0 5px 0 rgba(174, 217, 224, 0.2)) !important; }
+
+        .level-title { font-size: 2.2rem; color: var(--text-dark); margin: 15px 0; text-shadow: 2px 2px 0 var(--macaron-pink); }
+        
+        /* 能量條 - 像夾心軟糖 */
+        .progress-bar-wrap { width: 100%; height: 28px; background: var(--macaron-cream); border-radius: 14px; border: 4px solid #eee; margin: 10px 0; overflow: hidden; box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);}
+        .progress-bar { height: 100%; width: 100%; background: linear-gradient(90deg, var(--macaron-green), #8ae0a4); transition: width 1s linear; border-radius: 10px; }
+        
+        .timer-text { font-family: var(--font-en); font-size: 1.6rem; color: #aaa; margin-bottom: 25px; }
+
+        /* GO 按鈕 - 巨大的草莓馬卡龍 */
+        .btn-go {
+            width: 130px; height: 130px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, var(--macaron-pink), #ff9aa2);
+            border: 8px solid var(--macaron-cream);
+            color: var(--text-dark);
+            font-family: var(--font-en);
+            font-size: 3rem;
+            cursor: pointer;
+            box-shadow: 0 10px 0 #ff8593, 0 15px 20px rgba(255, 154, 162, 0.4);
+            transition: all 0.15s;
+            display: flex; align-items: center; justify-content: center;
+            text-shadow: 2px 2px 0 rgba(255,255,255,0.5);
+            -webkit-user-select: none; user-select: none;
+        }
+        .btn-go:active { transform: translateY(10px) scale(0.95); box-shadow: 0 0 0 #ff8593, inset 0 5px 10px rgba(0,0,0,0.1); }
+
+        /* 完成後的按鈕樣式 (薄荷馬卡龍 + 勾勾) */
+        .btn-go.finish {
+            width: 100%; height: auto; border-radius: 40px;
+            background: radial-gradient(circle at 50% 0%, var(--macaron-green), #98e6ad);
+            font-size: 0; padding: 18px 0;
+            box-shadow: 0 10px 0 #86d49d, 0 15px 20px rgba(183, 228, 199, 0.4);
+        }
+        .btn-go.finish:active { transform: translateY(10px); box-shadow: 0 0 0 #86d49d; }
+        
+        .check-icon { width: 55px; height: 55px; fill: none; stroke: var(--text-dark); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(2px 2px 0 rgba(255,255,255,0.5)); animation: pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+        /* 月曆 */
+        .calendar-card {
+            width: 100%; max-width: 450px;
+            background: var(--macaron-cream);
+            border-radius: 30px; padding: 20px;
+            border: 5px solid var(--macaron-purple);
+            box-shadow: 0 8px 0 #c4b7ff, 0 15px 20px rgba(220, 211, 255, 0.4);
+            margin-bottom: 20px;
+        }
+        .calendar-header { text-align: center; font-size: 1.6rem; color: var(--text-dark); margin-bottom: 15px; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+        .cal-day {
+            aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center;
+            background: #f0f0f0; border-radius: 15px; font-family: var(--font-en); color: #aaa; font-size: 1.1rem;
+            box-shadow: inset 0 2px 3px rgba(0,0,0,0.05);
+        }
+        .cal-day.done { background: var(--macaron-yellow); color: #ff9aa2; border: 3px solid #eadd78; font-size: 1.3rem; box-shadow: 0 4px 0 #eadd78; }
+        .cal-day.early { background: var(--macaron-pink); color: var(--text-dark); border: 3px solid #ff9aa2; box-shadow: 0 4px 0 #ff9aa2; }
+        .cal-day.today { border: 3px dashed var(--macaron-blue); }
+
+        .footer-tools { text-align: center; margin-top: 10px; }
+        .btn-reset { background: none; border: none; color: #aaa; text-decoration: underline; font-family: var(--font-main); cursor: pointer; font-size: 1rem;}
+
+        #confetti-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 999; display: none; }
+        
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes pop-in { 0% { transform: scale(0) rotate(-20deg); } 100% { transform: scale(1) rotate(0deg); } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-title-row">
+            <svg class="sun-mascot-small" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <g stroke="#ffd166" stroke-width="8" stroke-linecap="round">
+                    <line x1="50" y1="10" x2="50" y2="2"/> <line x1="50" y1="90" x2="50" y2="98"/>
+                    <line x1="90" y1="50" x2="98" y2="50"/> <line x1="10" y1="50" x2="2" y2="50"/>
+                    <line x1="78" y1="22" x2="84" y2="16"/> <line x1="22" y1="78" x2="16" y2="84"/>
+                    <line x1="78" y1="78" x2="84" y2="84"/> <line x1="22" y1="22" x2="16" y2="16"/>
+                </g>
+                <circle cx="50" cy="50" r="30" fill="#fbf8cc" stroke="#ffd166" stroke-width="3"/>
+                <circle cx="40" cy="45" r="3" fill="#5d4e6d"/> <circle cx="60" cy="45" r="3" fill="#5d4e6d"/>
+                <circle cx="35" cy="52" r="4" fill="#ffc8dd" opacity="0.8"/> <circle cx="65" cy="52" r="4" fill="#ffc8dd" opacity="0.8"/>
+                <path d="M42 55 Q50 62 58 55" fill="none" stroke="#5d4e6d" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <h1>貝貝早安</h1>
+        </div>
+        <div id="clock">--:--</div>
+    </header>
+
+    <div class="star-display">
+        <span class="star-icon">⭐</span>
+        <span id="stars-count">0</span>
+    </div>
+
+    <div class="game-card">
+        <div class="level-sticker-container" id="level-icon-container">
+            <div id="default-sun"></div>
+        </div>
+        
+        <h2 class="level-title" id="level-name">早安小勇士</h2>
+        
+        <div class="progress-bar-wrap" id="progress-wrap">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <div class="timer-text" id="timer">準備好了嗎？</div>
+        
+        <button class="btn-go" id="action-btn" onclick="handleAction()">GO!</button>
+    </div>
+
+    <div class="calendar-card">
+        <div class="calendar-header" id="cal-month-title">月曆</div>
+        <div class="calendar-grid" id="calendar-grid"></div>
+    </div>
+
+    <div class="footer-tools">
+        <button class="btn-reset" onclick="clearHistory()">重設紀錄</button>
+    </div>
+
+    <canvas id="confetti-canvas"></canvas>
+
+    <script>
+        // 大太陽 (柔和配色)
+        const cuteSunSVG = `
+        <svg class="svg-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <g class="sun-rays" stroke="#ffd166" stroke-width="6" stroke-linecap="round">
+                <line x1="50" y1="5" x2="50" y2="15"/> <line x1="50" y1="85" x2="50" y2="95"/>
+                <line x1="5" y1="50" x2="15" y2="50"/> <line x1="85" y1="50" x2="95" y2="50"/>
+                <line x1="18" y1="18" x2="25" y2="25"/> <line x1="75" y1="75" x2="82" y2="82"/>
+                <line x1="82" y1="18" x2="75" y2="25"/> <line x1="18" y1="82" x2="25" y2="75"/>
+            </g>
+            <circle cx="50" cy="50" r="32" fill="#fbf8cc" stroke="#ffd166" stroke-width="4"/>
+            <circle cx="38" cy="45" r="4" fill="#5d4e6d"/> <circle cx="62" cy="45" r="4" fill="#5d4e6d"/>
+            <ellipse cx="32" cy="55" rx="5" ry="3" fill="#ffc8dd" opacity="0.8"/>
+            <ellipse cx="68" cy="55" rx="5" ry="3" fill="#ffc8dd" opacity="0.8"/>
+            <path d="M40 58 Q50 68 60 58" fill="none" stroke="#5d4e6d" stroke-width="3" stroke-linecap="round"/>
+        </svg>`;
+
+        // 小男孩與書包 (柔和配色)
+        const boyWithBagSVG = `
+        <svg class="svg-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <rect x="15" y="35" width="25" height="30" rx="4" fill="#aed9e0" stroke="#fff" stroke-width="3"/>
+            <rect x="15" y="35" width="25" height="12" rx="2" fill="#92cdd6" stroke="#fff" stroke-width="3"/>
+            <rect x="35" y="35" width="30" height="35" rx="6" fill="#ffd166" stroke="#fff" stroke-width="3"/>
+            <circle cx="50" cy="22" r="14" fill="#ffeaa7" stroke="#fff" stroke-width="3"/>
+            <circle cx="54" cy="20" r="2" fill="#5d4e6d"/> <circle cx="46" cy="20" r="2" fill="#5d4e6d"/>
+            <path d="M48 26 Q50 28 52 26" stroke="#5d4e6d" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <rect x="40" y="70" width="8" height="20" rx="3" fill="#8592a3"/>
+            <rect x="52" y="70" width="8" height="20" rx="3" fill="#8592a3"/>
+            <path d="M60 40 Q75 30 70 20" stroke="#ffeaa7" stroke-width="7" stroke-linecap="round" fill="none"/>
+        </svg>`;
+
+        // 勾勾圖示 (深紫色)
+        const checkIconSVG = `
+        <svg class="check-icon" viewBox="0 0 24 24">
+            <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>`;
+
+        const levels = [
+            { name: "上廁所", icon: "🚽", type: "emoji", style: "" },
+            { name: "刷牙", icon: "🪥", type: "emoji", style: "" },
+            { name: "換衣服", icon: "👕", type: "emoji", style: "" },
+            { name: "收書包", icon: "🎒", type: "emoji", style: "blue-bag" }, 
+            { name: "穿襪子鞋子", icon: "🧦👟", type: "emoji", style: "" },
+            { name: "門口準備", icon: boyWithBagSVG, type: "html", style: "" } 
+        ];
+
+        let currentLevelIndex = 0;
+        let isRunning = false;
+        let startTime = 0;
+        let timerInterval;
+        let totalStars = 0;
+        let gameFinished = false;
+        const TIME_LIMIT = 300; 
+
+        const levelNameEl = document.getElementById('level-name');
+        const levelIconContainer = document.getElementById('level-icon-container');
+        const defaultSunEl = document.getElementById('default-sun');
+        const timerEl = document.getElementById('timer');
+        const progressBar = document.getElementById('progress-bar');
+        const btnEl = document.getElementById('action-btn');
+        const starsCountEl = document.getElementById('stars-count');
+        const clockEl = document.getElementById('clock');
+        const calGrid = document.getElementById('calendar-grid');
+        const calTitle = document.getElementById('cal-month-title');
+
+        defaultSunEl.innerHTML = cuteSunSVG;
+        loadStars();
+        renderCalendar(); 
+
+        setInterval(() => {
+            const now = new Date();
+            clockEl.textContent = now.toLocaleTimeString('zh-TW', { hour12: false, hour: '2-digit', minute:'2-digit' });
+        }, 1000);
+
+        function speak(text) {
+            if ('speechSynthesis' in window) {
+                const cleanText = text.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{200D}：]/gu, '');
+                const utterance = new SpeechSynthesisUtterance(cleanText);
+                utterance.lang = 'zh-TW'; utterance.rate = 1; utterance.pitch = 1.2;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+            const s = (seconds % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        }
+
+        function updateStars(count) {
+            totalStars += count;
+            starsCountEl.textContent = totalStars;
+            localStorage.setItem('beibei_total_stars', totalStars);
+            starsCountEl.parentElement.style.transform = "rotate(10deg) scale(1.2)";
+            setTimeout(() => starsCountEl.parentElement.style.transform = "rotate(-3deg) scale(1)", 300);
+        }
+
+        function loadStars() {
+            totalStars = parseInt(localStorage.getItem('beibei_total_stars') || "0");
+            starsCountEl.textContent = totalStars;
+        }
+
+        function handleAction() {
+            if (gameFinished) { location.reload(); return; }
+            if (!isRunning) { startLevel(); } else { finishLevelAndAutoStartNext(); }
+        }
+
+        function startLevel() {
+            if (currentLevelIndex >= levels.length) return;
+            isRunning = true;
+            startTime = Date.now();
+            const lvl = levels[currentLevelIndex];
+            
+            levelNameEl.textContent = lvl.name;
+            speak(lvl.name + "，GO！");
+
+            if (lvl.type === 'html') {
+                levelIconContainer.innerHTML = lvl.icon;
+            } else {
+                let className = "level-sticker";
+                if (lvl.style) className += " " + lvl.style;
+                levelIconContainer.innerHTML = `<div class="${className}">${lvl.icon}</div>`;
+            }
+
+            btnEl.innerHTML = checkIconSVG;
+            btnEl.classList.add('finish');
+            
+            progressBar.style.width = '100%';
+            progressBar.style.background = 'linear-gradient(90deg, var(--macaron-green), #98e6ad)';
+
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                const remaining = TIME_LIMIT - elapsed;
+                
+                timerEl.textContent = formatTime(elapsed);
+                const percentage = Math.max(0, (remaining / TIME_LIMIT) * 100);
+                progressBar.style.width = percentage + '%';
+
+                if (percentage < 30) {
+                    progressBar.style.background = 'linear-gradient(90deg, #ff9aa2, #ffb7c5)';
+                }
+
+                if (elapsed > TIME_LIMIT) { timerEl.style.color = '#ff9aa2'; } else { timerEl.style.color = '#aaa'; }
+            }, 1000);
+        }
+
+        function finishLevelAndAutoStartNext() {
+            clearInterval(timerInterval);
+            const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+            if (elapsedSeconds <= TIME_LIMIT) { updateStars(1); }
+            currentLevelIndex++;
+            if (currentLevelIndex < levels.length) { startLevel(); } else { endGame(); }
+        }
+
+        function endGame() {
+            isRunning = false;
+            gameFinished = true;
+            const now = new Date();
+            const targetTime = new Date();
+            targetTime.setHours(6, 50, 0);
+
+            let isEarlyBird = false;
+            let bonusText = "";
+            if (now < targetTime) {
+                updateStars(5);
+                isEarlyBird = true;
+                bonusText = "早鳥達成！";
+            }
+
+            saveDailyRecord(isEarlyBird);
+
+            levelNameEl.textContent = "挑戰成功！";
+            levelIconContainer.innerHTML = `<div class="level-sticker">🎉</div>`;
+            timerEl.textContent = `太棒了！ ${bonusText}`;
+            document.querySelector('.progress-bar-wrap').style.display = 'none';
+            
+            btnEl.innerHTML = "明天見";
+            btnEl.style.fontSize = "1.5rem";
+            btnEl.style.background = "#e0e0e0";
+            btnEl.style.boxShadow = "0 10px 0 #ccc, 0 15px 20px rgba(0,0,0,0.1)";
+            btnEl.style.color = "#888";
+            btnEl.classList.remove('finish');
+            
+            speak(`恭喜！獲得了 ${totalStars} 顆星星！`);
+            startConfetti();
+        }
+
+        function saveDailyRecord(isEarly) {
+            const today = new Date();
+            const dateKey = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+            let calendarData = JSON.parse(localStorage.getItem('beibei_calendar') || "{}");
+            calendarData[dateKey] = { done: true, early: isEarly };
+            localStorage.setItem('beibei_calendar', JSON.stringify(calendarData));
+            renderCalendar();
+        }
+
+        function renderCalendar() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth();
+            calTitle.textContent = `${year}年 ${month + 1}月`;
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const firstDayIndex = new Date(year, month, 1).getDay();
+            let calendarData = JSON.parse(localStorage.getItem('beibei_calendar') || "{}");
+            let html = '';
+            for (let i = 0; i < firstDayIndex; i++) html += `<div></div>`;
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateKey = `${year}-${month + 1}-${day}`;
+                const record = calendarData[dateKey];
+                const isToday = (day === now.getDate());
+                let classes = 'cal-day';
+                let content = day;
+                if (isToday) classes += ' today';
+                if (record) {
+                    if (record.early) { classes += ' done early'; content = '⭐'; } 
+                    else { classes += ' done'; content = '✓'; }
+                }
+                html += `<div class="${classes}">${content}</div>`;
+            }
+            calGrid.innerHTML = html;
+        }
+
+        function clearHistory() {
+            if(confirm("要清除所有星星和月曆貼紙嗎？")) {
+                localStorage.removeItem('beibei_calendar');
+                localStorage.removeItem('beibei_total_stars');
+                location.reload();
+            }
+        }
+
+        function startConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            canvas.style.display = 'block';
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            const pieces = [];
+            const colors = ['#ffc8dd', '#aed9e0', '#b7e4c7', '#fbf8cc'];
+            for (let i = 0; i < 150; i++) {
+                pieces.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    size: Math.random() * 12 + 8,
+                    speed: Math.random() * 5 + 3,
+                    rotation: Math.random() * 360
+                });
+            }
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                pieces.forEach(p => {
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.rotation * Math.PI / 180);
+                    ctx.fillStyle = p.color;
+                    ctx.beginPath(); ctx.arc(0, 0, p.size/2, 0, 2 * Math.PI); ctx.fill();
+                    ctx.restore();
+                    p.y += p.speed; p.rotation += p.speed * 2;
+                    if (p.y > canvas.height) p.y = -20;
+                });
+                requestAnimationFrame(draw);
+            }
+            draw();
+            setTimeout(() => canvas.style.display = 'none', 5000);
+        }
+    </script>
+</body>
+</html>
