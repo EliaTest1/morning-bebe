@@ -9,11 +9,9 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         :root {
-            /* 🎨 吉卜力自然色盤 */
-            --ghibli-sky: #A1D2EB;      /* 底色 */
-            --ghibli-cloud: #F8F9FA;
-            --ghibli-earth: #8B5E3C;
+            --ghibli-sky: #A1D2EB;      /* 指定的淺藍底色 */
             --ghibli-sun: #F4EBC1;
+            --ghibli-earth: #8B5E3C;
             --ghibli-cream: #FFFBE8;
             --text-dark: #4A3B2F;
             
@@ -23,29 +21,6 @@
 
         body {
             font-family: var(--font-main);
-            
-            /* 1. 設定底色 (這是您指定的吉卜力淺藍) */
-            /* 如果您的圖片是透明去背的，這個顏色會透出來 */
-            background-color: var(--ghibli-sky);
-
-            /* 2. 設定圖片路徑 */
-            /* ⚠️ 請將 'bg.png' 改成您實際的檔名 (例如 baby.png 或 wallpaper.jpg) */
-            /* 記得檔名大小寫要完全一樣！ bg.PNG 和 bg.png 是不一樣的 */
-            background-image: url('bg1.png');
-            
-            /* 3. 設定圖片顯示方式 (二選一，看您的圖案類型) */
-
-            /* --- 方式 A：如果是「整張滿版」的圖 (例如風景、大合照) --- */
-            /* background-size: cover;       /* 撐滿整個畫面 */
-            /* background-position: center;  /* 居中顯示 */
-            /* background-repeat: no-repeat; /* 不重複 */
-            /* background-attachment: fixed; /* 固定背景不捲動 */
-
-            /* --- 方式 B：如果是「重複排列」的小圖案 (例如小花、點點) --- */
-            /* (如果您想用這種，請把上面 方式 A 的四行刪掉，改用下面這兩行) */
-            background-size: 300px;  /* 圖案大小 */
-            background-repeat: repeat; /* 重複排列 */
-            
             color: var(--text-dark);
             margin: 0;
             padding: 15px;
@@ -54,6 +29,23 @@
             align-items: center;
             min-height: 100vh;
             padding-bottom: calc(20px + env(safe-area-inset-bottom));
+
+            /* ==========================================================
+               🎨 背景設定 (底色 + 半透明圖案)
+               ========================================================== */
+            
+            /* 1. 設定底色 (淺藍) */
+            background-color: var(--ghibli-sky);
+
+            /* 2. 設定圖案 */
+            /* 這裡使用 CSS 畫出半透明白點，保證會透出底色 */
+            /* 如果要用自己的圖，請改為: background-image: url('your-transparent-image.png'); */
+            background-image: url('bg2.png');
+            
+            background-position: center;
+            background-size: cover;
+            background-repeat: repeat;
+            background-attachment: fixed; 
         }
 
         header { 
@@ -69,31 +61,30 @@
             align-items: center;
             justify-content: center;
             gap: 15px;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
 
-        /* 🌞 小太陽樣式 (顏色已加深) */
+        /* 小太陽 (加深顏色版) */
         .sun-mascot-small { 
-            width: 60px; 
-            height: 60px; 
+            width: 60px; height: 60px; 
             animation: spin-slow 16s linear infinite; 
             filter: drop-shadow(0 2px 5px rgba(0,0,0,0.1)); 
         }
 
         h1 {
-            color: #FFF; /* 標題改白色，在藍底上較清楚 */
+            color: #FFF; 
             margin: 0;
             font-size: 2.8rem;
-            font-family: var(--font-en); /* 使用英文泡泡字體 */
+            font-family: var(--font-en); 
             text-shadow: 3px 3px 0px #4A90E2, 5px 5px 5px rgba(0,0,0,0.2);
             letter-spacing: 2px;
             line-height: 1.2;
         }
 
-        /* 📊 狀態列 (星星 + 時鐘 並排) */
+        /* 📊 狀態列：包含星星和時鐘 */
         .status-bar {
             display: flex;
-            align-items: center;
+            align-items: stretch; /* 讓兩個框框等高 */
             justify-content: center;
             gap: 15px;
             width: 100%;
@@ -104,35 +95,53 @@
         .star-widget {
             flex: 1;
             background: var(--ghibli-sun);
-            padding: 8px 15px; 
-            border-radius: 15px;
+            padding: 10px;
+            border-radius: 20px;
             box-shadow: 0 4px 0 #D9CFA0, 0 5px 10px rgba(0,0,0,0.1);
             display: flex; 
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             border: 3px solid var(--ghibli-earth);
             color: #D35400;
         }
-        
-        /* 時鐘計數器 */
+        .star-count-text { font-family: var(--font-en); font-weight: bold; margin-left: 5px; }
+
+        /* ⏰ 類比時鐘容器 */
         .clock-widget {
             flex: 1;
             background: rgba(255, 255, 255, 0.9);
-            padding: 8px 15px; 
-            border-radius: 15px;
+            padding: 5px;
+            border-radius: 20px;
             box-shadow: 0 4px 0 rgba(139, 94, 60, 0.3), 0 5px 10px rgba(0,0,0,0.1);
             display: flex; 
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
             border: 3px solid var(--ghibli-earth);
-            color: var(--text-dark);
-            font-family: var(--font-en);
         }
 
-        .widget-icon { margin-right: 8px; font-size: 1.2rem; }
-        .star-count-text { font-family: var(--font-en); font-weight: bold; }
+        /* SVG 時鐘本體 */
+        .analog-clock {
+            width: 70px;
+            height: 70px;
+        }
+        
+        /* 數字時間文字 */
+        .digital-time {
+            font-family: var(--font-en);
+            color: var(--text-dark);
+            font-size: 1rem;
+            margin-top: -5px;
+        }
+
+        /* 時鐘指針轉軸中心 */
+        .clock-center { fill: #8B5E3C; }
+        /* 指針樣式 */
+        .hand { transform-origin: 50% 50%; stroke-linecap: round; }
+        .hand-hour { stroke: #4A3B2F; stroke-width: 4; }
+        .hand-min { stroke: #8B5E3C; stroke-width: 3; }
+        .hand-sec { stroke: #D35400; stroke-width: 1.5; }
 
         /* 📜 遊戲卡片 */
         .game-card {
@@ -256,9 +265,22 @@
                 <span class="widget-icon">⭐</span>
                 <span class="star-count-text" id="stars-count">0</span>
             </div>
+            
             <div class="clock-widget">
-                <span class="widget-icon">⏰</span>
-                <span id="clock">--:--</span>
+                <svg class="analog-clock" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="45" fill="#F4EBC1" stroke="#8B5E3C" stroke-width="3" />
+                    <line x1="50" y1="10" x2="50" y2="15" stroke="#8B5E3C" stroke-width="2" />
+                    <line x1="50" y1="90" x2="50" y2="85" stroke="#8B5E3C" stroke-width="2" />
+                    <line x1="10" y1="50" x2="15" y2="50" stroke="#8B5E3C" stroke-width="2" />
+                    <line x1="90" y1="50" x2="85" y2="50" stroke="#8B5E3C" stroke-width="2" />
+                    
+                    <line id="hand-hour" class="hand hand-hour" x1="50" y1="50" x2="50" y2="25" />
+                    <line id="hand-min" class="hand hand-min" x1="50" y1="50" x2="50" y2="15" />
+                    <line id="hand-sec" class="hand hand-sec" x1="50" y1="50" x2="50" y2="12" />
+                    
+                    <circle cx="50" cy="50" r="3" fill="#8B5E3C" />
+                </svg>
+                <div class="digital-time" id="digital-clock">--:--</div>
             </div>
         </div>
     </header>
@@ -290,7 +312,7 @@
     <canvas id="confetti-canvas"></canvas>
 
     <script>
-        // SVG 定義 (配色與 Header 太陽一致)
+        // SVG 定義
         const cuteSunSVG = `
         <svg class="svg-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
             <g class="sun-rays" stroke="#FF9F43" stroke-width="6" stroke-linecap="round">
@@ -330,7 +352,7 @@
             { name: "換衣服", icon: "👕", type: "emoji", style: "" },
             { name: "收書包", icon: "🎒", type: "emoji", style: "blue-bag" }, 
             { name: "穿襪子鞋子", icon: "🧦👟", type: "emoji", style: "" },
-            { name: "門口準備", icon: boyWithBagSVG, type: "html", style: "" } 
+            { name: "Ready!", icon: boyWithBagSVG, type: "html", style: "" } 
         ];
 
         let currentLevelIndex = 0;
@@ -348,18 +370,42 @@
         const progressBar = document.getElementById('progress-bar');
         const btnEl = document.getElementById('action-btn');
         const starsCountEl = document.getElementById('stars-count');
-        const clockEl = document.getElementById('clock');
         const calGrid = document.getElementById('calendar-grid');
         const calTitle = document.getElementById('cal-month-title');
+        
+        // 時鐘指針元素
+        const handHour = document.getElementById('hand-hour');
+        const handMin = document.getElementById('hand-min');
+        const handSec = document.getElementById('hand-sec');
+        const digitalClock = document.getElementById('digital-clock');
 
         defaultSunEl.innerHTML = cuteSunSVG;
         loadStars();
         renderCalendar(); 
+        updateClock(); // 立即執行一次
+        setInterval(updateClock, 1000); // 每秒更新時鐘
 
-        setInterval(() => {
+        function updateClock() {
             const now = new Date();
-            clockEl.textContent = now.toLocaleTimeString('zh-TW', { hour12: false, hour: '2-digit', minute:'2-digit' });
-        }, 1000);
+            const h = now.getHours();
+            const m = now.getMinutes();
+            const s = now.getSeconds();
+
+            // 數位顯示
+            digitalClock.textContent = now.toLocaleTimeString('zh-TW', { hour12: false, hour: '2-digit', minute:'2-digit' });
+
+            // 指針角度計算
+            // 秒針：每秒 6 度
+            const secDeg = s * 6;
+            // 分針：每分 6 度 + 每秒 0.1 度
+            const minDeg = m * 6 + s * 0.1;
+            // 時針：每時 30 度 + 每分 0.5 度
+            const hourDeg = (h % 12) * 30 + m * 0.5;
+
+            handSec.style.transform = `rotate(${secDeg}deg)`;
+            handMin.style.transform = `rotate(${minDeg}deg)`;
+            handHour.style.transform = `rotate(${hourDeg}deg)`;
+        }
 
         function speak(text) {
             if ('speechSynthesis' in window) {
@@ -564,4 +610,3 @@
     </script>
 </body>
 </html>
-
