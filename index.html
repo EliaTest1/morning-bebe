@@ -4,18 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Good Morning</title>
-    <link href="https://fonts.googleapis.com/css2?family=Rubik+Bubbles&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rubik+Bubbles&family=ZCOOL+KuaiLe&family=Zen+Maru+Gothic:wght@500;700&family=Yomogi&family=Potta+One&family=Dela+Gothic+One&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         :root {
-            /* 🎨 吉卜力自然色盤 */
-            --ghibli-sky: #A1D2EB;      /* 淺藍底色 */
+            --ghibli-sky: #A1D2EB;
             --ghibli-sun: #F4EBC1;
             --ghibli-earth: #8B5E3C;
             --ghibli-cream: #FFFBE8;
             --text-dark: #4A3B2F;
             
+            /* 預設字體變數 */
             --font-main: 'ZCOOL KuaiLe', cursive; 
             --font-en: 'Rubik Bubbles', cursive; 
         }
@@ -31,17 +31,9 @@
             min-height: 100vh;
             padding-bottom: calc(20px + env(safe-area-inset-bottom));
 
-            /* ==========================================================
-               🎨 背景設定
-               ========================================================== */
-            
-            /* 1. 底色 */
+            /* 背景設定 */
             background-color: var(--ghibli-sky);
-
-            /* 2. 圖案 (透明去背圖) */
-            /* 這裡預設用 CSS 畫半透明白點，若要用自己的圖請改 url('bg.png') */
-            background-image: url('shiro.png');
-            
+            background-image: url('shiro2.png');
             background-position: 0 0, 25px 25px;
             background-size: 100px 100px;
             background-repeat: repeat;
@@ -49,7 +41,7 @@
         }
 
         header { 
-            width: 100%; margin-bottom: 10px; display: flex; flex-direction: column; align-items: center;
+            width: 100%; margin-bottom: 15px; display: flex; flex-direction: column; align-items: center;
         }
 
         .header-top-row {
@@ -65,7 +57,6 @@
             text-shadow: 3px 3px 0px #4A90E2, 5px 5px 5px rgba(0,0,0,0.2); letter-spacing: 2px; line-height: 1.2;
         }
 
-        /* 📊 狀態列 */
         .status-bar {
             display: flex; align-items: stretch; justify-content: center; gap: 15px; width: 100%; max-width: 400px;
         }
@@ -90,7 +81,6 @@
         .hand-min { stroke: #8B5E3C; stroke-width: 3; }
         .hand-sec { stroke: #D35400; stroke-width: 1.5; }
 
-        /* 📜 遊戲卡片 */
         .game-card {
             background: var(--ghibli-cream);
             background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
@@ -140,22 +130,15 @@
         
         .check-icon { width: 55px; height: 55px; fill: none; stroke: #FFFBE8; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.3)); animation: pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
 
-        /* 🗓️ 每週統計卡片 (木牌風格) */
         .weekly-stats-card {
-            width: 100%; max-width: 450px;
-            background: #F4EBC1; /* 奶油黃 */
-            border-radius: 15px; padding: 10px 20px;
-            border: 4px solid #D9CFA0;
-            margin-bottom: 10px;
-            color: #D35400;
-            font-size: 1.4rem;
+            width: 100%; max-width: 450px; background: #F4EBC1; border-radius: 15px; padding: 10px 20px;
+            border: 4px solid #D9CFA0; margin-bottom: 10px; color: #D35400; font-size: 1.4rem;
             display: flex; justify-content: space-between; align-items: center;
             box-shadow: 0 5px 0 rgba(0,0,0,0.1);
         }
         .weekly-stats-title { font-size: 1.1rem; color: #8B5E3C; }
         .weekly-stats-count { font-family: var(--font-en); font-weight: bold; font-size: 1.6rem; }
 
-        /* 月曆 */
         .calendar-card {
             width: 100%; max-width: 450px; background: var(--ghibli-cream);
             background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
@@ -170,15 +153,31 @@
             background: rgba(255,255,255,0.5); border-radius: 12px; font-family: var(--font-en); color: #A09383; font-size: 1.1rem;
             border: 2px solid transparent; position: relative;
         }
-        /* 完成的印章 - 顯示星星數 */
         .cal-day.done { background: var(--ghibli-sun); color: #D35400; border: 3px solid #D9CFA0; font-size: 1.2rem; box-shadow: 0 3px 0 #D9CFA0; transform: rotate(-2deg); font-weight: bold; }
         .cal-day.done::after { content: '⭐'; font-size: 0.6rem; position: absolute; bottom: 2px; right: 2px; }
-        /* 早鳥金色印章 */
         .cal-day.early { background: #FFD700; color: #FFFBE8; border: 3px solid #DAA520; box-shadow: 0 3px 0 #DAA520; transform: rotate(2deg); }
         .cal-day.today { border: 3px dashed var(--ghibli-sky); }
 
-        .footer-tools { text-align: center; margin-top: 10px; }
+        /* 🛠️ Footer 工具列樣式 */
+        .footer-tools { 
+            width: 100%; max-width: 450px;
+            display: flex; justify-content: space-between; align-items: center;
+            margin-top: 10px; padding: 0 10px;
+        }
+        
         .btn-reset { background: none; border: none; color: #8D7B68; text-decoration: underline; font-family: var(--font-main); cursor: pointer; font-size: 1rem;}
+        
+        /* 字型選單 */
+        .font-selector {
+            padding: 5px 10px;
+            border-radius: 10px;
+            border: 2px solid #8B5E3C;
+            background: #FFFBE8;
+            color: #4A3B2F;
+            font-family: var(--font-main);
+            font-size: 1rem;
+            cursor: pointer;
+        }
 
         #confetti-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 999; display: none; }
         
@@ -255,6 +254,14 @@
     </div>
 
     <div class="footer-tools">
+        <select id="font-selector" class="font-selector">
+            <option value="'ZCOOL KuaiLe', cursive">快樂體 (預設)</option>
+            <option value="'Zen Maru Gothic', sans-serif">圓圓體 (Maru)</option>
+            <option value="'Yomogi', cursive">麥克筆 (Yomogi)</option>
+            <option value="'Potta One', cursive">蠟筆風 (Potta)</option>
+            <option value="'Dela Gothic One', cursive">海報風 (Dela)</option>
+        </select>
+        
         <button class="btn-reset" onclick="clearHistory()">重設紀錄</button>
     </div>
 
@@ -307,4 +314,277 @@
         let isRunning = false;
         let startTime = 0;
         let timerInterval;
-        let
+        let totalStars = 0; 
+        let gameFinished = false;
+        const TIME_LIMIT = 300; 
+
+        const levelNameEl = document.getElementById('level-name');
+        const levelIconContainer = document.getElementById('level-icon-container');
+        const defaultSunEl = document.getElementById('default-sun');
+        const timerEl = document.getElementById('timer');
+        const progressBar = document.getElementById('progress-bar');
+        const btnEl = document.getElementById('action-btn');
+        const starsCountEl = document.getElementById('stars-count');
+        const weeklyStarsEl = document.getElementById('weekly-stars');
+        const calGrid = document.getElementById('calendar-grid');
+        const calTitle = document.getElementById('cal-month-title');
+        const fontSelector = document.getElementById('font-selector');
+        
+        const handHour = document.getElementById('hand-hour');
+        const handMin = document.getElementById('hand-min');
+        const handSec = document.getElementById('hand-sec');
+        const digitalClock = document.getElementById('digital-clock');
+
+        // 初始化
+        defaultSunEl.innerHTML = cuteSunSVG;
+        starsCountEl.textContent = 0;
+        renderCalendar();
+        renderWeeklyStats();
+        updateClock(); 
+        setInterval(updateClock, 1000);
+        
+        // 載入字型設定
+        const savedFont = localStorage.getItem('beibei_font');
+        if (savedFont) {
+            document.documentElement.style.setProperty('--font-main', savedFont);
+            fontSelector.value = savedFont;
+        }
+
+        // 字型切換事件
+        fontSelector.addEventListener('change', (e) => {
+            const newFont = e.target.value;
+            document.documentElement.style.setProperty('--font-main', newFont);
+            localStorage.setItem('beibei_font', newFont);
+        });
+
+        function updateClock() {
+            const now = new Date();
+            const h = now.getHours(); const m = now.getMinutes(); const s = now.getSeconds();
+            digitalClock.textContent = now.toLocaleTimeString('zh-TW', { hour12: false, hour: '2-digit', minute:'2-digit' });
+            const secDeg = s * 6; const minDeg = m * 6 + s * 0.1; const hourDeg = (h % 12) * 30 + m * 0.5;
+            handSec.style.transform = `rotate(${secDeg}deg)`;
+            handMin.style.transform = `rotate(${minDeg}deg)`;
+            handHour.style.transform = `rotate(${hourDeg}deg)`;
+        }
+
+        function speak(text) {
+            if ('speechSynthesis' in window) {
+                const cleanText = text.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{200D}：]/gu, '');
+                const utterance = new SpeechSynthesisUtterance(cleanText);
+                utterance.lang = 'zh-TW'; utterance.rate = 1.1; utterance.pitch = 1.4;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+            const s = (seconds % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        }
+
+        function updateStars(count) {
+            totalStars += count;
+            starsCountEl.textContent = totalStars;
+            starsCountEl.parentElement.style.transform = "scale(1.2)";
+            setTimeout(() => starsCountEl.parentElement.style.transform = "scale(1)", 300);
+        }
+
+        function handleAction() {
+            if (gameFinished) { location.reload(); return; }
+            if (!isRunning) { startLevel(); } else { finishLevelAndAutoStartNext(); }
+        }
+
+        function startLevel() {
+            if (currentLevelIndex === 0) {
+                totalStars = 0;
+                starsCountEl.textContent = 0;
+            }
+
+            if (currentLevelIndex >= levels.length) return;
+            isRunning = true;
+            startTime = Date.now();
+            const lvl = levels[currentLevelIndex];
+            
+            levelNameEl.textContent = lvl.name;
+            speak(lvl.name);
+
+            if (lvl.type === 'html') {
+                levelIconContainer.innerHTML = lvl.icon;
+            } else {
+                let className = "level-sticker";
+                if (lvl.style) className += " " + lvl.style;
+                levelIconContainer.innerHTML = `<div class="${className}">${lvl.icon}</div>`;
+            }
+
+            btnEl.innerHTML = checkIconSVG;
+            btnEl.classList.add('finish');
+            
+            progressBar.style.width = '100%';
+            progressBar.style.background = 'linear-gradient(to bottom, #A1D2EB, #8FBED8)';
+
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                const remaining = TIME_LIMIT - elapsed;
+                
+                timerEl.textContent = formatTime(elapsed);
+                const percentage = Math.max(0, (remaining / TIME_LIMIT) * 100);
+                progressBar.style.width = percentage + '%';
+
+                if (percentage < 30) {
+                    progressBar.style.background = 'linear-gradient(to bottom, #FF9AA2, #FFB7C5)';
+                }
+
+                if (elapsed > TIME_LIMIT) { timerEl.style.color = '#D35400'; } else { timerEl.style.color = '#8D7B68'; }
+            }, 1000);
+        }
+
+        function finishLevelAndAutoStartNext() {
+            clearInterval(timerInterval);
+            const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+            let starsEarned = 0;
+            if (elapsedSeconds <= TIME_LIMIT) {
+                starsEarned = 1;
+                const savedSeconds = TIME_LIMIT - elapsedSeconds;
+                const speedBonus = Math.floor(savedSeconds / 60);
+                starsEarned += speedBonus;
+                updateStars(starsEarned);
+            }
+            currentLevelIndex++;
+            if (currentLevelIndex < levels.length) { startLevel(); } else { endGame(); }
+        }
+
+        function endGame() {
+            isRunning = false;
+            gameFinished = true;
+            const now = new Date();
+            const targetTime = new Date();
+            targetTime.setHours(6, 50, 0);
+
+            let isEarlyBird = false;
+            let bonusText = "";
+            if (now < targetTime) {
+                updateStars(5);
+                isEarlyBird = true;
+                bonusText = "早鳥 +5 顆星！";
+            }
+
+            saveDailyRecord(totalStars, isEarlyBird);
+
+            levelNameEl.textContent = "挑戰成功！";
+            levelIconContainer.innerHTML = `<div class="level-sticker">🎉</div>`;
+            timerEl.textContent = `太棒了！ ${bonusText}`;
+            document.querySelector('.progress-bar-wrap').style.display = 'none';
+            
+            btnEl.innerHTML = "明天見";
+            btnEl.style.fontSize = "1.8rem";
+            btnEl.style.background = "linear-gradient(to bottom, #E0E0E0, #D0D0D0)";
+            btnEl.style.border = "5px solid #A0A0A0";
+            btnEl.style.boxShadow = "0 10px 0 #808080, 0 15px 20px rgba(0,0,0,0.1)";
+            btnEl.style.color = "#666";
+            btnEl.classList.remove('finish');
+            
+            speak(`恭喜！獲得了 ${totalStars} 顆星星！`);
+            startConfetti();
+        }
+
+        function saveDailyRecord(stars, isEarly) {
+            const today = new Date();
+            const dateKey = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+            let calendarData = JSON.parse(localStorage.getItem('beibei_calendar') || "{}");
+            calendarData[dateKey] = { done: true, stars: stars, early: isEarly };
+            localStorage.setItem('beibei_calendar', JSON.stringify(calendarData));
+            renderCalendar();
+            renderWeeklyStats();
+        }
+
+        function renderCalendar() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth();
+            calTitle.textContent = `${year}年 ${month + 1}月`;
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const firstDayIndex = new Date(year, month, 1).getDay();
+            let calendarData = JSON.parse(localStorage.getItem('beibei_calendar') || "{}");
+            let html = '';
+            for (let i = 0; i < firstDayIndex; i++) html += `<div></div>`;
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateKey = `${year}-${month + 1}-${day}`;
+                const record = calendarData[dateKey];
+                const isToday = (day === now.getDate());
+                let classes = 'cal-day';
+                let content = day;
+                if (isToday) classes += ' today';
+                if (record) {
+                    if (record.early) { classes += ' done early'; } 
+                    else { classes += ' done'; }
+                    content = record.stars || '✓'; 
+                }
+                html += `<div class="${classes}">${content}</div>`;
+            }
+            calGrid.innerHTML = html;
+        }
+
+        function renderWeeklyStats() {
+            let calendarData = JSON.parse(localStorage.getItem('beibei_calendar') || "{}");
+            const now = new Date();
+            const dayOfWeek = now.getDay(); 
+            const diff = now.getDate() - dayOfWeek; 
+            let weeklyTotal = 0;
+            for (let i = 0; i < 7; i++) {
+                let d = new Date(now);
+                d.setDate(diff + i);
+                const dateKey = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+                if (calendarData[dateKey] && calendarData[dateKey].stars) {
+                    weeklyTotal += calendarData[dateKey].stars;
+                }
+            }
+            weeklyStarsEl.textContent = weeklyTotal + " ⭐";
+        }
+
+        function clearHistory() {
+            if(confirm("要清除所有星星和月曆貼紙嗎？")) {
+                localStorage.removeItem('beibei_calendar');
+                localStorage.removeItem('beibei_total_stars');
+                location.reload();
+            }
+        }
+
+        function startConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            canvas.style.display = 'block';
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            const pieces = [];
+            const colors = ['#A1D2EB', '#F4EBC1', '#87C158', '#FFD1DC'];
+            for (let i = 0; i < 150; i++) {
+                pieces.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    size: Math.random() * 12 + 8,
+                    speed: Math.random() * 4 + 2, 
+                    rotation: Math.random() * 360
+                });
+            }
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                pieces.forEach(p => {
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.rotation * Math.PI / 180);
+                    ctx.fillStyle = p.color;
+                    ctx.beginPath(); ctx.arc(0, 0, p.size/2, 0, 2 * Math.PI); ctx.fill();
+                    ctx.restore();
+                    p.y += p.speed; p.rotation += p.speed * 1.5;
+                    if (p.y > canvas.height) p.y = -20;
+                });
+                requestAnimationFrame(draw);
+            }
+            draw();
+            setTimeout(() => canvas.style.display = 'none', 5000);
+        }
+    </script>
+</body>
+</html>
