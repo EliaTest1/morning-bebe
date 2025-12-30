@@ -15,11 +15,13 @@
             --ghibli-cream: #FFFBE8;
             --text-dark: #4A3B2F;
             
-            /* 預設字體變數 */
+            /* 字型變數 */
             --font-main: 'ZCOOL KuaiLe', cursive; 
+            /* 雖然保留英文變數，但我們這次把大部分元素都改用 main，讓風格統一 */
             --font-en: 'Rubik Bubbles', cursive; 
         }
-body {
+
+        body {
             font-family: var(--font-main);
             color: var(--text-dark);
             margin: 0;
@@ -30,29 +32,15 @@ body {
             min-height: 100vh;
             padding-bottom: calc(20px + env(safe-area-inset-bottom));
 
-            /* === 背景設定修正 === */
-            
-            /* 1. 設定底色 */
+            /* === 背景設定 === */
             background-color: var(--ghibli-sky);
-
-            /* 2. 設定圖片 */
-            background-image: url('shiro2.png');
-
-            /* 3. 設定大小 (如果您希望圖案小一點，可以把 100px 改成 50px) */
-            background-size: 200px auto; 
-
-            /* 4. 設定重複排列 */
+            background-image: url('shiro2.png'); /* 您的圖片 */
+            background-size: 100px auto; 
             background-repeat: repeat;
-
-            /* 5. 修正位置 (單張圖只需要一個位置設定) */
             background-position: center top; 
-
-            /* 6. 固定背景不捲動 */
             background-attachment: fixed; 
-            
-            /* ★★★ 救命絕招：混合模式 ★★★ */
-            /* 如果您的 shiro2.png 不是透明的 (有白底)，加上這行可以讓白底變透明！ */
-            background-blend-mode: multiply; 
+            /* 讓白底圖片變透明的魔法 */
+            background-blend-mode: multiply;
         }
 
         header { 
@@ -67,13 +55,14 @@ body {
             width: 60px; height: 60px; animation: spin-slow 16s linear infinite; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.1)); 
         }
 
-       h1 {
-            color: #FFF; /* #71ADD6 藍色 */
-            margin: 0;
+        h1 {
+            color: #FFF; 
+            margin: 0; 
             font-size: 2.8rem;
-            font-family: var(--font-en); 
-            text-shadow: 3px 3px 0px #597496, 3px 3px 3px rgba(0,0,0,0.1);
-            letter-spacing: 1px;
+            /* [修改] 標題現在使用主要字型，會跟著選單改變，不會那麼胖了 */
+            font-family: var(--font-main); 
+            text-shadow: 3px 3px 0px #4A90E2, 5px 5px 5px rgba(0,0,0,0.2); 
+            letter-spacing: 2px; 
             line-height: 1.2;
         }
 
@@ -86,7 +75,13 @@ body {
             box-shadow: 0 4px 0 #D9CFA0, 0 5px 10px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center;
             font-size: 1.8rem; border: 3px solid var(--ghibli-earth); color: #D35400;
         }
-        .star-count-text { font-family: var(--font-en); font-weight: bold; margin-left: 5px; }
+        
+        /* [修改] 星星數字現在使用主要字型 */
+        .star-count-text { 
+            font-family: var(--font-main); 
+            font-weight: bold; 
+            margin-left: 5px; 
+        }
 
         .clock-widget {
             flex: 1; background: rgba(255, 255, 255, 0.9); padding: 5px; border-radius: 20px;
@@ -95,7 +90,15 @@ body {
         }
 
         .analog-clock { width: 70px; height: 70px; }
-        .digital-time { font-family: var(--font-en); color: var(--text-dark); font-size: 1rem; margin-top: -5px; }
+        
+        /* [修改] 數位時鐘也改用主要字型 */
+        .digital-time { 
+            font-family: var(--font-main); 
+            color: var(--text-dark); 
+            font-size: 1rem; 
+            margin-top: -5px; 
+        }
+        
         .hand { transform-origin: 50% 50%; stroke-linecap: round; }
         .hand-hour { stroke: #4A3B2F; stroke-width: 4; }
         .hand-min { stroke: #8B5E3C; stroke-width: 3; }
@@ -128,17 +131,16 @@ body {
             transition: width 1s linear; border-radius: 10px; border-right: 3px solid rgba(255,255,255,0.5);
         }
         
-        .timer-text { 
-         font-family: var(--font-main); /* 改成這個，就會跟著選單變了！ */
-         font-size: 1.6rem; 
-         color: #8D7B68; 
-         margin-bottom: 25px; 
-        }
+        /* [修改] 這裡上次改過了，維持正確 */
+        .timer-text { font-family: var(--font-main); font-size: 1.6rem; color: #8D7B68; margin-bottom: 25px; }
 
         .btn-go {
             width: 150px; height: 130px; border-radius: 20px;
             background: linear-gradient(to bottom, #D4A373 0%, #B38253 100%);
-            border: 5px solid #8B5E3C; color: #FFFBE8; font-family: var(--font-en); font-size: 3rem; cursor: pointer;
+            border: 5px solid #8B5E3C; color: #FFFBE8; 
+            /* [修改] 按鈕字型改成主要字型，支援中文 */
+            font-family: var(--font-main); 
+            font-size: 3rem; cursor: pointer;
             box-shadow: 0 12px 0 #6D4C41, 0 15px 20px rgba(0,0,0,0.3), inset 0 2px 3px rgba(255,255,255,0.3);
             transition: all 0.15s; display: flex; align-items: center; justify-content: center;
             text-shadow: 2px 2px 0 rgba(0,0,0,0.3); -webkit-user-select: none; user-select: none;
@@ -162,7 +164,9 @@ body {
             box-shadow: 0 5px 0 rgba(0,0,0,0.1);
         }
         .weekly-stats-title { font-size: 1.1rem; color: #8B5E3C; }
-        .weekly-stats-count { font-family: var(--font-en); font-weight: bold; font-size: 1.6rem; }
+        
+        /* [修改] 統計數字使用主要字型 */
+        .weekly-stats-count { font-family: var(--font-main); font-weight: bold; font-size: 1.6rem; }
 
         .calendar-card {
             width: 100%; max-width: 450px; background: var(--ghibli-cream);
@@ -175,7 +179,10 @@ body {
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
         .cal-day {
             aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center;
-            background: rgba(255,255,255,0.5); border-radius: 12px; font-family: var(--font-en); color: #A09383; font-size: 1.1rem;
+            background: rgba(255,255,255,0.5); border-radius: 12px; 
+            /* [修改] 日曆數字使用主要字型 */
+            font-family: var(--font-main); 
+            color: #A09383; font-size: 1.1rem;
             border: 2px solid transparent; position: relative;
         }
         .cal-day.done { background: var(--ghibli-sun); color: #D35400; border: 3px solid #D9CFA0; font-size: 1.2rem; box-shadow: 0 3px 0 #D9CFA0; transform: rotate(-2deg); font-weight: bold; }
@@ -183,7 +190,6 @@ body {
         .cal-day.early { background: #FFD700; color: #FFFBE8; border: 3px solid #DAA520; box-shadow: 0 3px 0 #DAA520; transform: rotate(2deg); }
         .cal-day.today { border: 3px dashed var(--ghibli-sky); }
 
-        /* 🛠️ Footer 工具列樣式 */
         .footer-tools { 
             width: 100%; max-width: 450px;
             display: flex; justify-content: space-between; align-items: center;
@@ -192,7 +198,6 @@ body {
         
         .btn-reset { background: none; border: none; color: #8D7B68; text-decoration: underline; font-family: var(--font-main); cursor: pointer; font-size: 1rem;}
         
-        /* 字型選單 */
         .font-selector {
             padding: 5px 10px;
             border-radius: 10px;
@@ -414,6 +419,11 @@ body {
             setTimeout(() => starsCountEl.parentElement.style.transform = "scale(1)", 300);
         }
 
+        function loadStars() {
+            totalStars = parseInt(localStorage.getItem('beibei_total_stars') || "0");
+            starsCountEl.textContent = totalStars;
+        }
+
         function handleAction() {
             if (gameFinished) { location.reload(); return; }
             if (!isRunning) { startLevel(); } else { finishLevelAndAutoStartNext(); }
@@ -501,8 +511,10 @@ body {
             timerEl.textContent = `太棒了！ ${bonusText}`;
             document.querySelector('.progress-bar-wrap').style.display = 'none';
             
+            // [修改] 結束按鈕樣式，使用主要字型
             btnEl.innerHTML = "明天見";
             btnEl.style.fontSize = "1.8rem";
+            btnEl.style.fontFamily = "var(--font-main)"; 
             btnEl.style.background = "linear-gradient(to bottom, #E0E0E0, #D0D0D0)";
             btnEl.style.border = "5px solid #A0A0A0";
             btnEl.style.boxShadow = "0 10px 0 #808080, 0 15px 20px rgba(0,0,0,0.1)";
@@ -613,9 +625,3 @@ body {
     </script>
 </body>
 </html>
-
-
-
-
-
-
