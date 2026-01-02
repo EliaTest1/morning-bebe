@@ -15,9 +15,7 @@
             --ghibli-cream: #FFFBE8;
             --text-dark: #4A3B2F;
             
-            /* 字型變數 */
             --font-main: 'ZCOOL KuaiLe', cursive; 
-            /* 雖然保留英文變數，但我們這次把大部分元素都改用 main，讓風格統一 */
             --font-en: 'Rubik Bubbles', cursive; 
         }
 
@@ -32,14 +30,12 @@
             min-height: 100vh;
             padding-bottom: calc(20px + env(safe-area-inset-bottom));
 
-            /* === 背景設定 === */
             background-color: var(--ghibli-sky);
-            background-image: url('shiro2.png'); /* 您的圖片 */
+            background-image: url('shiro2.png'); 
             background-size: 100px auto; 
             background-repeat: repeat;
             background-position: center top; 
             background-attachment: fixed; 
-            /* 讓白底圖片變透明的魔法 */
             background-blend-mode: multiply;
         }
 
@@ -59,7 +55,6 @@
             color: #FFF; 
             margin: 0; 
             font-size: 2.8rem;
-            /* [修改] 標題現在使用主要字型，會跟著選單改變，不會那麼胖了 */
             font-family: var(--font-main); 
             text-shadow: 3px 3px 0px #4A90E2, 5px 5px 5px rgba(0,0,0,0.2); 
             letter-spacing: 2px; 
@@ -76,7 +71,6 @@
             font-size: 1.8rem; border: 3px solid var(--ghibli-earth); color: #D35400;
         }
         
-        /* [修改] 星星數字現在使用主要字型 */
         .star-count-text { 
             font-family: var(--font-main); 
             font-weight: bold; 
@@ -91,7 +85,6 @@
 
         .analog-clock { width: 70px; height: 70px; }
         
-        /* [修改] 數位時鐘也改用主要字型 */
         .digital-time { 
             font-family: var(--font-main); 
             color: var(--text-dark); 
@@ -131,14 +124,12 @@
             transition: width 1s linear; border-radius: 10px; border-right: 3px solid rgba(255,255,255,0.5);
         }
         
-        /* [修改] 這裡上次改過了，維持正確 */
         .timer-text { font-family: var(--font-main); font-size: 1.6rem; color: #8D7B68; margin-bottom: 25px; }
 
         .btn-go {
             width: 150px; height: 130px; border-radius: 20px;
             background: linear-gradient(to bottom, #D4A373 0%, #B38253 100%);
             border: 5px solid #8B5E3C; color: #FFFBE8; 
-            /* [修改] 按鈕字型改成主要字型，支援中文 */
             font-family: var(--font-main); 
             font-size: 3rem; cursor: pointer;
             box-shadow: 0 12px 0 #6D4C41, 0 15px 20px rgba(0,0,0,0.3), inset 0 2px 3px rgba(255,255,255,0.3);
@@ -165,7 +156,6 @@
         }
         .weekly-stats-title { font-size: 1.1rem; color: #8B5E3C; }
         
-        /* [修改] 統計數字使用主要字型 */
         .weekly-stats-count { font-family: var(--font-main); font-weight: bold; font-size: 1.6rem; }
 
         .calendar-card {
@@ -180,7 +170,6 @@
         .cal-day {
             aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center;
             background: rgba(255,255,255,0.5); border-radius: 12px; 
-            /* [修改] 日曆數字使用主要字型 */
             font-family: var(--font-main); 
             color: #A09383; font-size: 1.1rem;
             border: 2px solid transparent; position: relative;
@@ -192,21 +181,23 @@
 
         .footer-tools { 
             width: 100%; max-width: 450px;
-            display: flex; justify-content: space-between; align-items: center;
-            margin-top: 10px; padding: 0 10px;
+            display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
+            margin-top: 10px; padding: 0 10px; gap: 10px;
         }
         
         .btn-reset { background: none; border: none; color: #8D7B68; text-decoration: underline; font-family: var(--font-main); cursor: pointer; font-size: 1rem;}
         
-        .font-selector {
+        /* 下拉選單樣式 */
+        .style-select {
             padding: 5px 10px;
             border-radius: 10px;
             border: 2px solid #8B5E3C;
             background: #FFFBE8;
             color: #4A3B2F;
             font-family: var(--font-main);
-            font-size: 1rem;
+            font-size: 0.9rem;
             cursor: pointer;
+            width: 48%; /* 讓兩個選單並排 */
         }
 
         #confetti-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 999; display: none; }
@@ -284,15 +275,24 @@
     </div>
 
     <div class="footer-tools">
-        <select id="font-selector" class="font-selector">
+        <select id="font-selector" class="style-select">
             <option value="'ZCOOL KuaiLe', cursive">快樂體 (預設)</option>
             <option value="'Zen Maru Gothic', sans-serif">圓圓體 (Maru)</option>
             <option value="'Yomogi', cursive">麥克筆 (Yomogi)</option>
             <option value="'Potta One', cursive">蠟筆風 (Potta)</option>
             <option value="'Dela Gothic One', cursive">海報風 (Dela)</option>
         </select>
+
+        <select id="voice-selector" class="style-select">
+            <option value="energetic">活力 (推薦)</option>
+            <option value="normal">正常 (原聲)</option>
+            <option value="gentle">溫柔 (慢速)</option>
+            <option value="cartoon">卡通 (快速)</option>
+        </select>
         
-        <button class="btn-reset" onclick="clearHistory()">重設紀錄</button>
+        <div style="width: 100%; text-align: center; margin-top: 10px;">
+            <button class="btn-reset" onclick="clearHistory()">重設紀錄</button>
+        </div>
     </div>
 
     <canvas id="confetti-canvas"></canvas>
@@ -359,6 +359,7 @@
         const calGrid = document.getElementById('calendar-grid');
         const calTitle = document.getElementById('cal-month-title');
         const fontSelector = document.getElementById('font-selector');
+        const voiceSelector = document.getElementById('voice-selector');
         
         const handHour = document.getElementById('hand-hour');
         const handMin = document.getElementById('hand-min');
@@ -380,11 +381,21 @@
             fontSelector.value = savedFont;
         }
 
-        // 字型切換事件
+        // 載入語音設定
+        const savedVoice = localStorage.getItem('beibei_voice');
+        if (savedVoice) {
+            voiceSelector.value = savedVoice;
+        }
+
+        // 事件監聽
         fontSelector.addEventListener('change', (e) => {
             const newFont = e.target.value;
             document.documentElement.style.setProperty('--font-main', newFont);
             localStorage.setItem('beibei_font', newFont);
+        });
+
+        voiceSelector.addEventListener('change', (e) => {
+            localStorage.setItem('beibei_voice', e.target.value);
         });
 
         function updateClock() {
@@ -402,9 +413,20 @@
                 const cleanText = text.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{200D}：]/gu, '');
                 const utterance = new SpeechSynthesisUtterance(cleanText);
                 utterance.lang = 'zh-TW'; 
-                // 修改這裡：
-                utterance.rate = 0.8; // 速度放慢 (原本 1.1 -> 改成 0.8)
-                utterance.pitch = 1.8; // 音調變高更像卡通 (原本 1.4 -> 改成 1.8)
+                
+                // 讀取當前選擇的語音風格
+                const voiceStyle = voiceSelector.value;
+                
+                if (voiceStyle === 'energetic') {
+                    utterance.rate = 1.1; utterance.pitch = 1.2; // 活力
+                } else if (voiceStyle === 'gentle') {
+                    utterance.rate = 0.9; utterance.pitch = 1.0; // 溫柔
+                } else if (voiceStyle === 'cartoon') {
+                    utterance.rate = 1.2; utterance.pitch = 1.4; // 卡通
+                } else {
+                    utterance.rate = 1.0; utterance.pitch = 1.0; // 正常
+                }
+
                 window.speechSynthesis.speak(utterance);
             }
         }
@@ -420,11 +442,6 @@
             starsCountEl.textContent = totalStars;
             starsCountEl.parentElement.style.transform = "scale(1.2)";
             setTimeout(() => starsCountEl.parentElement.style.transform = "scale(1)", 300);
-        }
-
-        function loadStars() {
-            totalStars = parseInt(localStorage.getItem('beibei_total_stars') || "0");
-            starsCountEl.textContent = totalStars;
         }
 
         function handleAction() {
@@ -514,7 +531,6 @@
             timerEl.textContent = `太棒了！ ${bonusText}`;
             document.querySelector('.progress-bar-wrap').style.display = 'none';
             
-            // [修改] 結束按鈕樣式，使用主要字型
             btnEl.innerHTML = "明天見";
             btnEl.style.fontSize = "1.8rem";
             btnEl.style.fontFamily = "var(--font-main)"; 
