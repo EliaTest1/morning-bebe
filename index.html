@@ -31,12 +31,13 @@
             padding-bottom: calc(20px + env(safe-area-inset-bottom));
 
             background-color: var(--ghibli-sky);
+            /* --- 修改處：背景圖片設定 --- */
             background-image: url('cat.png'); 
-            background-size: 100px auto; 
+            background-size: 120px auto; /* 調整大小讓貓咪清楚一點 */
             background-repeat: repeat;
             background-position: center top; 
             background-attachment: fixed; 
-            background-blend-mode: multiply;
+            background-blend-mode: multiply; /* 讓背景有點藍藍的天空感，若想要原色可改為 normal */
         }
 
         header { 
@@ -313,6 +314,7 @@
             <path d="M40 58 Q50 68 60 58" fill="none" stroke="#4A3B2F" stroke-width="3" stroke-linecap="round"/>
         </svg>`;
 
+        // 原本的圖案保留著變數定義，但下面不會用到它了
         const boyWithBagSVG = `
         <svg class="svg-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
             <rect x="15" y="35" width="25" height="30" rx="4" fill="#A1D2EB" stroke="#FFFBE8" stroke-width="3"/>
@@ -331,13 +333,20 @@
             <polyline points="20 6 9 17 4 12"></polyline>
         </svg>`;
 
+        // --- 修改處：關卡列表 ---
         const levels = [
             { name: "上廁所", icon: "🚽", type: "emoji", style: "" },
             { name: "刷牙", icon: "🪥", type: "emoji", style: "" },
             { name: "換衣服", icon: "👕", type: "emoji", style: "" },
             { name: "收書包", icon: "🎒", type: "emoji", style: "blue-bag" }, 
             { name: "穿襪子鞋子", icon: "🧦👟", type: "emoji", style: "" },
-            { name: "門口準備", icon: boyWithBagSVG, type: "html", style: "" } 
+            // 下面這行已經修改：名稱改為 GO，圖案使用 bebe.png，並調整大小與動畫
+            { 
+                name: "GO", 
+                icon: `<img src="bebe.png" alt="Bebe" style="height: 125px; width: auto; object-fit: contain; filter: drop-shadow(0 8px 5px rgba(0,0,0,0.1)); animation: bounce-gentle 3s infinite ease-in-out;">`, 
+                type: "html", 
+                style: "" 
+            } 
         ];
 
         let currentLevelIndex = 0;
@@ -644,4 +653,3 @@
     </script>
 </body>
 </html>
-
