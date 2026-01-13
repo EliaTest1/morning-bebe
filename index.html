@@ -107,46 +107,63 @@
             margin-bottom: 20px; position: relative;
         }
 
-        /* --- 修改處：圖案容器固定高度並置中 --- */
-        .level-sticker-container { 
-            height: 200px; /* 固定高度 200px */
-            width: 100%; 
-            display: flex; 
+        /* --- 修改處：新增一個 Wrapper 來處理並排 --- */
+        .level-content-wrapper {
+            display: flex;
+            flex-direction: row; /* 橫向排列 */
             align-items: center; /* 垂直置中 */
-            justify-content: center; /* 水平置中 */
-            margin-bottom: 10px;
+            justify-content: flex-start; /* 靠左對齊 */
+            width: 100%;
+            gap: 15px; /* 圖案與文字間距 */
+            margin-bottom: 15px;
+            flex: 1; /* 佔據可用空間 */
         }
 
-        /* --- 修改處：圖片與 SVG 適應高度 --- */
+        /* --- 修改處：圖案容器設定 --- */
+        .level-sticker-container { 
+            /* 移除原本的固定高度 200px */
+            /* 設定一個較大的基底尺寸，讓它在並排時盡可能大 */
+            width: 140px; 
+            height: 140px;
+            flex-shrink: 0; /* 防止被壓縮 */
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            margin-bottom: 0; /* 移除底部邊距 */
+        }
+
+        /* --- 修改處：圖片與 SVG 適應容器 --- */
         .svg-icon, .level-sticker img { 
-            height: 100%; /* 填滿容器高度 */
-            width: auto; /* 寬度自動維持比例 */
+            width: 100%; 
+            height: 100%;
             max-width: 100%;
+            max-height: 100%;
             filter: drop-shadow(0 8px 5px rgba(0,0,0,0.1)); 
             animation: bounce-gentle 3s infinite ease-in-out; 
-            object-fit: contain;
+            object-fit: contain; /* 保持比例填滿 */
         }
         
         .level-sticker { 
-            font-size: 7rem; /* emoji 字體放大 */
+            font-size: 6rem; /* Emoji 字體大小調整 */
             line-height: 1; 
             filter: drop-shadow(0 6px 4px rgba(0,0,0,0.1)); 
             animation: bounce-gentle 3s infinite ease-in-out; 
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 15px; /* 讓襪子鞋子中間有點空隙 */
+            gap: 10px; 
         }
         
         .blue-bag { filter: hue-rotate(210deg) drop-shadow(0 6px 4px rgba(0,0,0,0.1)) !important; }
 
-        /* --- 修改處：標題置中 --- */
+        /* --- 修改處：標題靠左對齊並填滿空間 --- */
         .level-title { 
             font-size: 2.6rem; 
             color: var(--text-dark); 
-            margin: 5px 0 15px 0; 
-            text-align: center; /* 文字置中 */
-            width: 100%;
+            margin: 0; 
+            text-align: left; /* 靠左 */
+            flex: 1; /* 填滿右側空間 */
+            line-height: 1.1;
         }
         
         .progress-bar-wrap { 
@@ -186,9 +203,8 @@
         }
         .btn-go.finish:active { transform: translateY(10px); box-shadow: 0 2px 0 #426628; }
         
-        /* --- 修改處：明天見按鈕的明亮樣式 --- */
         .btn-go.tomorrow-btn {
-            background: linear-gradient(to bottom, #4FACFE 0%, #00F2FE 100%); /* 明亮的藍色漸層 */
+            background: linear-gradient(to bottom, #4FACFE 0%, #00F2FE 100%); 
             border: 5px solid #00C6FB;
             color: #FFF;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
@@ -303,11 +319,12 @@
     </header>
 
     <div class="game-card">
-        <div class="level-sticker-container" id="level-icon-container">
-            <div id="default-sun"></div>
+        <div class="level-content-wrapper">
+            <div class="level-sticker-container" id="level-icon-container">
+                <div id="default-sun"></div>
+            </div>
+            <h2 class="level-title" id="level-name">傅旻赫! GOGO!</h2>
         </div>
-        
-        <h2 class="level-title" id="level-name">傅旻赫! GOGO!</h2>
         
         <div class="progress-bar-wrap" id="progress-wrap">
             <div class="progress-bar" id="progress-bar"></div>
@@ -351,20 +368,7 @@
     <canvas id="confetti-canvas"></canvas>
 
     <script>
-        const cuteSunSVG = `
-        <svg class="svg-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <g class="sun-rays" stroke="#FF9F43" stroke-width="6" stroke-linecap="round">
-                <line x1="50" y1="5" x2="50" y2="15"/> <line x1="50" y1="85" x2="50" y2="95"/>
-                <line x1="5" y1="50" x2="15" y2="50"/> <line x1="85" y1="50" x2="95" y2="50"/>
-                <line x1="18" y1="18" x2="25" y2="25"/> <line x1="75" y1="75" x2="82" y2="82"/>
-                <line x1="82" y1="18" x2="75" y2="25"/> <line x1="18" y1="82" x2="25" y2="75"/>
-            </g>
-            <circle cx="50" cy="50" r="32" fill="#FFD700" stroke="#FF9F43" stroke-width="4"/>
-            <circle cx="38" cy="45" r="4" fill="#4A3B2F"/> <circle cx="62" cy="45" r="4" fill="#4A3B2F"/>
-            <ellipse cx="32" cy="55" rx="5" ry="3" fill="#FF9A9E" opacity="0.8"/>
-            <ellipse cx="68" cy="55" rx="5" ry="3" fill="#FF9A9E" opacity="0.8"/>
-            <path d="M40 58 Q50 68 60 58" fill="none" stroke="#4A3B2F" stroke-width="3" stroke-linecap="round"/>
-        </svg>`;
+        // 移除原本的 SVG String，現在改用圖片了
 
         const checkIconSVG = `
         <svg class="check-icon" viewBox="0 0 24 24">
@@ -376,11 +380,11 @@
             { name: "刷牙", icon: "🪥", type: "emoji", style: "" },
             { name: "換衣服", icon: "👕", type: "emoji", style: "" },
             { name: "收書包", icon: "🎒", type: "emoji", style: "blue-bag" }, 
-            // 修改處：穿襪子鞋子改為 HTML 並排顯示
-            { name: "穿襪子鞋子", icon: "<span>🧦</span><span>👟</span>", type: "html", style: "" },
-            // 修改處：最後一關名稱改為 出發!，圖案改為 go.png
+            // 修改處：文字改為「襪子鞋子」
+            { name: "襪子鞋子", icon: "<span>🧦</span><span>👟</span>", type: "html", style: "" },
             { 
                 name: "出發!", 
+                // 這裡使用 100% height 讓它填滿新的容器大小
                 icon: `<img src="go.png" alt="Go" style="height: 100%; width: auto;">`, 
                 type: "html", 
                 style: "" 
@@ -414,7 +418,8 @@
         const digitalClock = document.getElementById('digital-clock');
 
         // 初始化
-        defaultSunEl.innerHTML = cuteSunSVG;
+        // 修改處：初始畫面改用 sun.png 圖片
+        defaultSunEl.innerHTML = '<img src="sun.png" class="svg-icon" alt="sun" style="animation: none; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.1));">';
         starsCountEl.textContent = 0;
         renderCalendar();
         renderWeeklyStats();
@@ -576,9 +581,8 @@
             btnEl.style.fontFamily = "var(--font-main)"; 
             btnEl.style.fontSize = "1.8rem"; 
             
-            // --- 修改處：移除舊的 style 修改，改用 class 控制顏色 ---
             btnEl.classList.remove('finish');
-            btnEl.classList.add('tomorrow-btn'); // 加入新樣式 class
+            btnEl.classList.add('tomorrow-btn'); 
             
             speak(`恭喜！獲得了 ${totalStars} 顆星星！`);
             startConfetti();
