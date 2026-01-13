@@ -32,8 +32,7 @@
 
             background-color: var(--ghibli-sky);
             background-image: url('cat.png'); 
-            /* --- 修改處：放大背景圖案尺寸 --- */
-            background-size: 180px auto; /* 原本是 120px，改大到 180px */
+            background-size: 180px auto; 
             background-repeat: repeat;
             background-position: center top; 
             background-attachment: fixed; 
@@ -123,19 +122,20 @@
             height: 140px;
             flex-shrink: 0; 
             display: flex; 
-            align-items: center; 
-            justify-content: center; 
+            align-items: center; /* 垂直置中子元素 */
+            justify-content: center; /* 水平置中子元素 */
             margin-bottom: 0; 
         }
 
-        .svg-icon, .level-sticker img { 
+        /* --- 修改處：加入 video 標籤共用樣式，確保置中與適應大小 --- */
+        .svg-icon, .level-sticker img, .level-sticker-container video { 
             width: 100%; 
             height: 100%;
             max-width: 100%;
             max-height: 100%;
-            filter: drop-shadow(0 8px 5px rgba(0,0,0,0.1)); 
+            /* filter: drop-shadow(...) 已移除 */
             animation: bounce-gentle 3s infinite ease-in-out; 
-            object-fit: contain; 
+            object-fit: contain; /* 保持比例填滿容器，確保視覺置中 */
         }
         
         .level-sticker { 
@@ -151,12 +151,11 @@
         
         .blue-bag { filter: hue-rotate(210deg) drop-shadow(0 6px 4px rgba(0,0,0,0.1)) !important; }
 
-        /* --- 修改處：將文字對齊改為置中 --- */
         .level-title { 
             font-size: 2.6rem; 
             color: var(--text-dark); 
             margin: 0; 
-            text-align: center; /* 原本是 left，改成 center 以平衡視覺 */
+            text-align: center; 
             line-height: 1.1;
         }
         
@@ -315,8 +314,7 @@
     <div class="game-card">
         <div class="level-content-wrapper">
             <div class="level-sticker-container" id="level-icon-container">
-                <div id="default-sun"></div>
-            </div>
+                </div>
             <h2 class="level-title" id="level-name">傅旻赫! GOGO!</h2>
         </div>
         
@@ -372,7 +370,6 @@
             { name: "刷牙", icon: "🪥", type: "emoji", style: "" },
             { name: "換衣服", icon: "👕", type: "emoji", style: "" },
             { name: "收書包", icon: "🎒", type: "emoji", style: "blue-bag" }, 
-            // --- 修改處：改用 foot.png 圖片 ---
             { 
                 name: "襪子鞋子", 
                 icon: `<img src="foot.png" alt="Foot" style="height: 100%; width: auto;">`, 
@@ -414,7 +411,10 @@
         const digitalClock = document.getElementById('digital-clock');
 
         // 初始化
-        defaultSunEl.innerHTML = '<img src="sun.png" alt="sun" style="width: 100%; height: 100%; object-fit: contain;">';
+        // --- 修改處：將初始的 img 改為 video 標籤，並加入自動播放屬性 ---
+        // 注意：style 部分已經移到 CSS 中統一管理
+        levelIconContainer.innerHTML = '<video src="sun.mp4" autoplay loop muted playsinline></video>';
+        
         starsCountEl.textContent = 0;
         renderCalendar();
         renderWeeklyStats();
