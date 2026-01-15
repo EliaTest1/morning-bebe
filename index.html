@@ -167,7 +167,7 @@
         }
         .progress-bar { 
             height: 100%; width: 100%; background: linear-gradient(to bottom, #A1D2EB, #8FBED8); 
-            transition: width 1s linear, background 0.5s ease; /* 增加顏色的平滑過渡 */
+            transition: width 1s linear, background 0.5s ease; 
             border-radius: 10px; border-right: 3px solid rgba(255,255,255,0.5);
         }
         
@@ -544,7 +544,7 @@
 
                 if (elapsed > TIME_LIMIT) { 
                     timerEl.style.color = '#D35400';
-                    // --- 修改處：單項超時，文字改成哭哭臉 ---
+                    // 單項超時，文字改成哭哭臉
                     timerEl.textContent = formatTime(elapsed) + " 😭"; 
                 } else { 
                     timerEl.style.color = '#8D7B68'; 
@@ -576,76 +576,84 @@
             const deadline = new Date();
             deadline.setHours(6, 50, 0); 
 
-            let finalTitle = "";
+            let leftContent = "";
+            let rightContent = "";
             let isPerfect = false;
+            let finalTitle = "";
+            let finalVoice = "";
 
-            // 1. 先產生失敗項目的圖示 (共用邏輯)
-            let failedIconsHTML = "";
-            if (failedTasks.length > 0) {
-                failedIconsHTML = failedTasks.map(taskName => {
-                    const level = levels.find(l => l.name === taskName);
-                    // 如果是 emoji 直接顯示，如果是 html 圖片則縮小顯示
-                    let iconDisplay = level.type === 'emoji' 
-                        ? `<span style="font-size: 2.5rem;">${level.icon}</span>` 
-                        : `<div style="width: 40px; height: 40px; display:inline-block;">${level.icon}</div>`;
-                    
-                    return `
-                        <div style="display: flex; flex-direction: column; align-items: center; margin: 0 5px;">
-                            ${iconDisplay}
-                        </div>`;
-                }).join("");
-                
-                // 包裝一下，讓它置中
-                failedIconsHTML = `<div style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 5px; margin-top: 5px;">${failedIconsHTML}</div>`;
-            }
-
-            // 2. 判斷逾時 (6:50)
+            // 判斷是否超過 6:50
             if (now > deadline) {
+                // --- 狀態：太晚了 (失敗) ---
                 totalStars = 0;
-                starsCountEl.textContent = 0;
+                starsCountEl.textContent = 0; // 星星歸零
+                
                 finalTitle = "太晚囉...";
-                
-                // --- 修改處：太晚囉 = 鬧鐘哭哭 + 下方列出失敗項目 ---
-                levelIconContainer.innerHTML = `
-                <div class="level-sticker" style="flex-direction: column; width: 100%; height: 100%;">
-                    <div style="display: flex; align-items: center; justify-content: center; width:100%;">
-                        <span style="font-size: 3.5rem;">⏰</span>
-                        <span style="font-size: 3.5rem;">😭</span>
-                    </div>
-                    ${failedIconsHTML} </div>`;
-                
-                speak("哎呀，超過時間了，星星都不見了。");
+                finalVoice = "哎呀，超過時間了，星星都不見了。";
+
+                // 左邊：哭哭臉 (因為超過6:50)
+                leftContent = "😭";
+
+                // 右邊：鬧鐘圖示 (因為整體超時)
+                rightContent = `<span style="font-size: 3.5rem;">⏰</span>`;
             } else {
-                // 3. 正常完成 (沒超過6:50)
+                // --- 狀態：準時完成 ---
+                // 左邊：笑笑臉 (因為在6:50前)
+                leftContent = "😊";
+
                 if (failedTasks.length === 0) {
-                    // 全對：星星加倍
-                    totalStars = totalStars * 2;
-                    starsCountEl.textContent = totalStars;
+                    // --- 狀態：完美 (全部單項也都成功) ---
+                    totalStars = totalStars * 2; // 星星加倍
                     isPerfect = true;
-                    finalTitle = "太棒了！";
-                    // 顯示獎盃
-                    levelIconContainer.innerHTML = `<div class="level-sticker">🏆</div>`;
-                    startConfetti();
-                    speak("太棒了！全部完成，星星變兩倍！");
-                } else {
-                    // 有失敗項目
-                    finalTitle = "完成！";
-                    // 顯示失敗項目
-                    levelIconContainer.innerHTML = `
-                        <div style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center;">
-                            ${failedIconsHTML}
-                        </div>`;
                     
+                    finalTitle = "太棒了！";
+                    finalVoice = "太棒了！全部完成，星星變兩倍！";
+                    
+                    // 右邊：禮炮 🎉
+                    rightContent = "🎉";
+                    
+                    // 特效
                     startConfetti();
-                    speak("做完了！但是有幾個動作太慢囉，你看畫面。");
+                } else {
+                    // --- 狀態：準時但有單項失敗 ---
+                    finalTitle = "完成！";
+                    finalVoice = "做完了！但是有幾個動作太慢囉，你看畫面。";
+
+                    // 右邊：顯示失敗項目的圖示
+                    let failedIcons = failedTasks.map(taskName => {
+                         const level = levels.find(l => l.name === taskName);
+                         // 判斷是 emoji 還是 圖片
+                         if (level.type === 'emoji') {
+                             return `<span style="font-size: 2.5rem; margin: 0 5px;">${level.icon}</span>`;
+                         } else {
+                             return `<div style="width: 40px; height: 40px; display:inline-block; margin: 0 5px;">${level.icon}</div>`;
+                         }
+                    }).join("");
+                    
+                    rightContent = `<div style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center;">${failedIcons}</div>`;
+                    
+                    // 雖然不是完美，但因為完成了，給一點鼓勵特效
+                    startConfetti();
                 }
+                starsCountEl.textContent = totalStars;
             }
 
             saveDailyRecord(totalStars, isPerfect);
 
             levelNameEl.textContent = finalTitle;
+            speak(finalVoice);
             timerEl.style.display = 'none'; // 隱藏時間文字
             document.querySelector('.progress-bar-wrap').style.display = 'none';
+
+            // 組合左右兩邊的畫面
+            // 使用 flexbox 切割左右兩塊，並用中間線隔開
+            levelIconContainer.innerHTML = `
+                <div style="display: flex; width: 100%; height: 100%; align-items: center;">
+                    <div style="flex: 1; display: flex; justify-content: center; align-items: center; font-size: 5rem;">${leftContent}</div>
+                    <div style="width: 3px; height: 70%; background: rgba(139, 94, 60, 0.3); border-radius: 2px;"></div>
+                    <div style="flex: 1; display: flex; justify-content: center; align-items: center; font-size: 4rem;">${rightContent}</div>
+                </div>
+            `;
             
             // 按鈕改成月亮符號
             btnEl.innerHTML = "🌙"; 
