@@ -127,6 +127,7 @@
             margin-bottom: 0; 
         }
 
+        /* 圖片與SVG通用樣式 */
         .svg-icon, 
         .level-sticker img, 
         .level-sticker-container img { 
@@ -166,7 +167,8 @@
         }
         .progress-bar { 
             height: 100%; width: 100%; background: linear-gradient(to bottom, #A1D2EB, #8FBED8); 
-            transition: width 1s linear; border-radius: 10px; border-right: 3px solid rgba(255,255,255,0.5);
+            transition: width 1s linear, background 0.5s ease; /* 增加顏色的平滑過渡 */
+            border-radius: 10px; border-right: 3px solid rgba(255,255,255,0.5);
         }
         
         .timer-text { font-family: var(--font-main); font-size: 1.6rem; color: #8D7B68; margin-bottom: 25px; white-space: pre-wrap; text-align: center; }
@@ -323,7 +325,7 @@
         </div>
         <div class="timer-text" id="timer">準備好了嗎？</div>
         
-        <button class="btn-go" id="action-btn" onclick="handleAction()">Start</button>
+        <button class="btn-go" id="action-btn" onclick="handleAction()">▶️ GO</button>
     </div>
 
     <div class="weekly-stats-card">
@@ -346,10 +348,10 @@
         </select>
 
         <select id="voice-selector" class="style-select">
-            <option value="energetic">活力 (推薦)</option>
+            <option value="cartoon">卡通 (快速 - 推薦)</option>
+            <option value="energetic">活力</option>
             <option value="normal">正常 (原聲)</option>
             <option value="gentle">溫柔 (慢速)</option>
-            <option value="cartoon">卡通 (快速)</option>
         </select>
         
         <div style="width: 100%; text-align: center; margin-top: 10px;">
@@ -502,7 +504,11 @@
             const lvl = levels[currentLevelIndex];
             
             levelNameEl.textContent = lvl.name;
-            speak(lvl.name);
+            
+            // 修改：加入鼓勵語音
+            const actionWords = ["預備，開始！", "加油加油！", "動作快喔！", "GOGO!"];
+            const randomWord = actionWords[Math.floor(Math.random() * actionWords.length)];
+            speak(lvl.name + "，" + randomWord);
 
             if (lvl.type === 'html') {
                 levelIconContainer.innerHTML = lvl.icon;
@@ -515,6 +521,7 @@
             btnEl.innerHTML = checkIconSVG;
             btnEl.classList.add('finish');
             
+            // 初始顏色：綠色/藍色
             progressBar.style.width = '100%';
             progressBar.style.background = 'linear-gradient(to bottom, #A1D2EB, #8FBED8)';
 
@@ -527,8 +534,13 @@
                 const percentage = Math.max(0, (remaining / TIME_LIMIT) * 100);
                 progressBar.style.width = percentage + '%';
 
-                if (percentage < 30) {
-                    progressBar.style.background = 'linear-gradient(to bottom, #FF9AA2, #FFB7C5)';
+                // 修改：紅綠燈顏色邏輯
+                if (percentage > 50) {
+                     progressBar.style.background = 'linear-gradient(to bottom, #A1D2EB, #8FBED8)'; // 藍綠 (安全)
+                } else if (percentage > 20) {
+                     progressBar.style.background = 'linear-gradient(to bottom, #FFE066, #FFD700)'; // 黃色 (警告)
+                } else {
+                     progressBar.style.background = 'linear-gradient(to bottom, #FF9AA2, #FFB7C5)'; // 紅色 (危險)
                 }
 
                 if (elapsed > TIME_LIMIT) { 
@@ -562,65 +574,78 @@
             gameFinished = true;
             const now = new Date();
             const deadline = new Date();
-            deadline.setHours(6, 50, 0); // 設定死線為今天 6:50
+            deadline.setHours(6, 50, 0); 
 
             let finalTitle = "";
-            let finalMessage = "";
+            let finalMessage = ""; 
             let isPerfect = false;
 
-            // 規則 2: 若超過 6:50，取消所有星星
+            // 判斷逾時 (6:50)
             if (now > deadline) {
                 totalStars = 0;
                 starsCountEl.textContent = 0;
-                finalTitle = "再接再厲";
-                finalMessage = "超過 6:50 囉！明天早點開始吧！";
-                levelIconContainer.innerHTML = `<div class="level-sticker">⏰</div>`;
+                finalTitle = "太晚囉...";
+                // 顯示鬧鐘圖示表示遲到
+                levelIconContainer.innerHTML = `<div class="level-sticker" style="font-size: 6rem;">⏰ <span style="font-size:3rem">❌</span></div>`;
+                speak("哎呀，超過時間了，星星都不見了。");
             } else {
-                // 6:50 之前完成
                 if (failedTasks.length === 0) {
-                    // 規則 4: 每項皆在 5 分鐘內完成，星星加倍
+                    // 全對：星星加倍
                     totalStars = totalStars * 2;
                     starsCountEl.textContent = totalStars;
                     isPerfect = true;
-                    finalTitle = "做得好！";
-                    finalMessage = "全部都在時間內完成，星星加倍！\n太棒了！";
-                    levelIconContainer.innerHTML = `<div class="level-sticker">🎉</div>`;
+                    finalTitle = "太棒了！";
+                    // 顯示獎盃
+                    levelIconContainer.innerHTML = `<div class="level-sticker">🏆</div>`;
                     startConfetti();
+                    speak("太棒了！全部完成，星星變兩倍！");
                 } else {
-                    // 有項目超時，但不扣除已獲得的星星
-                    finalTitle = "做得好！";
-                    finalMessage = "雖然有項目超時，但準時完成了！";
-                    levelIconContainer.innerHTML = `<div class="level-sticker">👍</div>`;
-                    startConfetti();
-                }
-            }
+                    // 有失敗項目
+                    finalTitle = "完成！";
+                    // 修改：把失敗的項目轉成圖示顯示
+                    let failedIconsHTML = failedTasks.map(taskName => {
+                        const level = levels.find(l => l.name === taskName);
+                        // 如果是 emoji 直接顯示，如果是 html 圖片則縮小顯示
+                        let iconDisplay = level.type === 'emoji' 
+                            ? `<span style="font-size: 3rem;">${level.icon}</span>` 
+                            : `<div style="width: 50px; height: 50px; display:inline-block;">${level.icon}</div>`;
+                        
+                        return `
+                            <div style="display: flex; flex-direction: column; align-items: center; margin: 0 5px;">
+                                ${iconDisplay}
+                                <span style="color: red; font-size: 1.5rem; font-weight: bold;">❌</span>
+                            </div>`;
+                    }).join("");
 
-            // 規則 3 & 5: 顯示失敗項目與最後訊息
-            if (failedTasks.length > 0) {
-                finalMessage += "\n\n超時項目：\n" + failedTasks.join("、");
+                    // 將這些圖示放入中間的大框框
+                    levelIconContainer.innerHTML = `
+                        <div style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center;">
+                            ${failedIconsHTML}
+                        </div>`;
+                    
+                    startConfetti();
+                    speak("做完了！但是有幾個動作太慢囉，你看畫面。");
+                }
             }
 
             saveDailyRecord(totalStars, isPerfect);
 
             levelNameEl.textContent = finalTitle;
-            timerEl.textContent = finalMessage;
+            timerEl.style.display = 'none'; // 隱藏時間文字
             document.querySelector('.progress-bar-wrap').style.display = 'none';
             
-            btnEl.innerHTML = "明天見";
-            btnEl.style.fontFamily = "var(--font-main)"; 
-            btnEl.style.fontSize = "1.8rem"; 
+            // 修改：按鈕改成月亮符號
+            btnEl.innerHTML = "🌙"; 
+            btnEl.style.fontSize = "3rem"; 
             
             btnEl.classList.remove('finish');
             btnEl.classList.add('tomorrow-btn'); 
-            
-            speak(`${finalTitle}，獲得了 ${totalStars} 顆星星！`);
         }
 
         function saveDailyRecord(stars, isPerfect) {
             const today = new Date();
             const dateKey = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
             let calendarData = JSON.parse(localStorage.getItem('beibei_calendar') || "{}");
-            // early 欄位現在用來存是否完美達成 (星星加倍)
             calendarData[dateKey] = { done: true, stars: stars, early: isPerfect };
             localStorage.setItem('beibei_calendar', JSON.stringify(calendarData));
             renderCalendar();
