@@ -544,7 +544,8 @@
 
                 if (elapsed > TIME_LIMIT) { 
                     timerEl.style.color = '#D35400';
-                    timerEl.textContent = formatTime(elapsed) + " (超時)";
+                    // --- 修改處：單項超時，文字改成哭哭臉 ---
+                    timerEl.textContent = formatTime(elapsed) + " 😭"; 
                 } else { 
                     timerEl.style.color = '#8D7B68'; 
                 }
@@ -576,27 +577,46 @@
             deadline.setHours(6, 50, 0); 
 
             let finalTitle = "";
-            let finalMessage = ""; 
             let isPerfect = false;
 
-            // 判斷逾時 (6:50)
+            // 1. 先產生失敗項目的圖示 (共用邏輯)
+            let failedIconsHTML = "";
+            if (failedTasks.length > 0) {
+                failedIconsHTML = failedTasks.map(taskName => {
+                    const level = levels.find(l => l.name === taskName);
+                    // 如果是 emoji 直接顯示，如果是 html 圖片則縮小顯示
+                    let iconDisplay = level.type === 'emoji' 
+                        ? `<span style="font-size: 2.5rem;">${level.icon}</span>` 
+                        : `<div style="width: 40px; height: 40px; display:inline-block;">${level.icon}</div>`;
+                    
+                    return `
+                        <div style="display: flex; flex-direction: column; align-items: center; margin: 0 5px;">
+                            ${iconDisplay}
+                        </div>`;
+                }).join("");
+                
+                // 包裝一下，讓它置中
+                failedIconsHTML = `<div style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 5px; margin-top: 5px;">${failedIconsHTML}</div>`;
+            }
+
+            // 2. 判斷逾時 (6:50)
             if (now > deadline) {
                 totalStars = 0;
                 starsCountEl.textContent = 0;
                 finalTitle = "太晚囉...";
                 
-                // --- 修改處：鬧鐘 + 哭哭臉 + 右下角的小標記，避免重疊文字 ---
+                // --- 修改處：太晚囉 = 鬧鐘哭哭 + 下方列出失敗項目 ---
                 levelIconContainer.innerHTML = `
-                <div class="level-sticker" style="position: relative; width: 100%; height: 100%;">
-                    <div style="display: flex; align-items: center; justify-content: center; width:100%; height:100%;">
-                        <span style="font-size: 4rem;">⏰</span>
-                        <span style="font-size: 4rem;">😭</span>
+                <div class="level-sticker" style="flex-direction: column; width: 100%; height: 100%;">
+                    <div style="display: flex; align-items: center; justify-content: center; width:100%;">
+                        <span style="font-size: 3.5rem;">⏰</span>
+                        <span style="font-size: 3.5rem;">😭</span>
                     </div>
-                    <div style="position: absolute; bottom: 0px; right: 0px; font-size: 3rem; line-height: 1; filter: drop-shadow(2px 2px 0px #FFF);">❌</div>
-                </div>`;
+                    ${failedIconsHTML} </div>`;
                 
                 speak("哎呀，超過時間了，星星都不見了。");
             } else {
+                // 3. 正常完成 (沒超過6:50)
                 if (failedTasks.length === 0) {
                     // 全對：星星加倍
                     totalStars = totalStars * 2;
@@ -610,22 +630,7 @@
                 } else {
                     // 有失敗項目
                     finalTitle = "完成！";
-                    
-                    let failedIconsHTML = failedTasks.map(taskName => {
-                        const level = levels.find(l => l.name === taskName);
-                        // 如果是 emoji 直接顯示，如果是 html 圖片則縮小顯示
-                        let iconDisplay = level.type === 'emoji' 
-                            ? `<span style="font-size: 3rem;">${level.icon}</span>` 
-                            : `<div style="width: 50px; height: 50px; display:inline-block;">${level.icon}</div>`;
-                        
-                        return `
-                            <div style="display: flex; flex-direction: column; align-items: center; margin: 0 5px;">
-                                ${iconDisplay}
-                                <span style="color: red; font-size: 1.5rem; font-weight: bold;">❌</span>
-                            </div>`;
-                    }).join("");
-
-                    // 將這些圖示放入中間的大框框
+                    // 顯示失敗項目
                     levelIconContainer.innerHTML = `
                         <div style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center;">
                             ${failedIconsHTML}
