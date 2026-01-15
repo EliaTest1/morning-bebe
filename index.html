@@ -505,7 +505,7 @@
             
             levelNameEl.textContent = lvl.name;
             
-            // 修改：加入鼓勵語音
+            // 鼓勵語音
             const actionWords = ["預備，開始！", "加油加油！", "動作快喔！", "GOGO!"];
             const randomWord = actionWords[Math.floor(Math.random() * actionWords.length)];
             speak(lvl.name + "，" + randomWord);
@@ -521,7 +521,6 @@
             btnEl.innerHTML = checkIconSVG;
             btnEl.classList.add('finish');
             
-            // 初始顏色：綠色/藍色
             progressBar.style.width = '100%';
             progressBar.style.background = 'linear-gradient(to bottom, #A1D2EB, #8FBED8)';
 
@@ -534,7 +533,7 @@
                 const percentage = Math.max(0, (remaining / TIME_LIMIT) * 100);
                 progressBar.style.width = percentage + '%';
 
-                // 修改：紅綠燈顏色邏輯
+                // 紅綠燈顏色邏輯
                 if (percentage > 50) {
                      progressBar.style.background = 'linear-gradient(to bottom, #A1D2EB, #8FBED8)'; // 藍綠 (安全)
                 } else if (percentage > 20) {
@@ -585,8 +584,17 @@
                 totalStars = 0;
                 starsCountEl.textContent = 0;
                 finalTitle = "太晚囉...";
-                // 顯示鬧鐘圖示表示遲到
-                levelIconContainer.innerHTML = `<div class="level-sticker" style="font-size: 6rem;">⏰ <span style="font-size:3rem">❌</span></div>`;
+                
+                // --- 修改處：鬧鐘 + 哭哭臉 + 右下角的小標記，避免重疊文字 ---
+                levelIconContainer.innerHTML = `
+                <div class="level-sticker" style="position: relative; width: 100%; height: 100%;">
+                    <div style="display: flex; align-items: center; justify-content: center; width:100%; height:100%;">
+                        <span style="font-size: 4rem;">⏰</span>
+                        <span style="font-size: 4rem;">😭</span>
+                    </div>
+                    <div style="position: absolute; bottom: 0px; right: 0px; font-size: 3rem; line-height: 1; filter: drop-shadow(2px 2px 0px #FFF);">❌</div>
+                </div>`;
+                
                 speak("哎呀，超過時間了，星星都不見了。");
             } else {
                 if (failedTasks.length === 0) {
@@ -602,7 +610,7 @@
                 } else {
                     // 有失敗項目
                     finalTitle = "完成！";
-                    // 修改：把失敗的項目轉成圖示顯示
+                    
                     let failedIconsHTML = failedTasks.map(taskName => {
                         const level = levels.find(l => l.name === taskName);
                         // 如果是 emoji 直接顯示，如果是 html 圖片則縮小顯示
@@ -634,7 +642,7 @@
             timerEl.style.display = 'none'; // 隱藏時間文字
             document.querySelector('.progress-bar-wrap').style.display = 'none';
             
-            // 修改：按鈕改成月亮符號
+            // 按鈕改成月亮符號
             btnEl.innerHTML = "🌙"; 
             btnEl.style.fontSize = "3rem"; 
             
