@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Good Morning</title>
+    <title>Good Morning Challenge</title>
     <link href="https://fonts.googleapis.com/css2?family=Rubik+Bubbles&family=ZCOOL+KuaiLe&family=Zen+Maru+Gothic:wght@500;700&family=Yomogi&family=Potta+One&family=Dela+Gothic+One&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -127,7 +127,6 @@
             margin-bottom: 0; 
         }
 
-        /* --- 修改處：將樣式統一應用到 img，包含 SVG 和直接插入的 GIF/PNG --- */
         .svg-icon, 
         .level-sticker img, 
         .level-sticker-container img { 
@@ -136,7 +135,7 @@
             max-width: 100%;
             max-height: 100%;
             animation: bounce-gentle 3s infinite ease-in-out; 
-            object-fit: contain; /* 確保圖片在 140x140 框框內保持比例置中 */
+            object-fit: contain;
         }
         
         .level-sticker { 
@@ -170,7 +169,7 @@
             transition: width 1s linear; border-radius: 10px; border-right: 3px solid rgba(255,255,255,0.5);
         }
         
-        .timer-text { font-family: var(--font-main); font-size: 1.6rem; color: #8D7B68; margin-bottom: 25px; }
+        .timer-text { font-family: var(--font-main); font-size: 1.6rem; color: #8D7B68; margin-bottom: 25px; white-space: pre-wrap; text-align: center; }
 
         .btn-go {
             width: 100%; 
@@ -391,7 +390,8 @@
         let timerInterval;
         let totalStars = 0; 
         let gameFinished = false;
-        const TIME_LIMIT = 300; 
+        let failedTasks = []; // 紀錄超時項目
+        const TIME_LIMIT = 300; // 5分鐘限制
 
         const levelNameEl = document.getElementById('level-name');
         const levelIconContainer = document.getElementById('level-icon-container');
@@ -412,7 +412,6 @@
         const digitalClock = document.getElementById('digital-clock');
 
         // 初始化
-        // --- 修改處：使用 img 標籤顯示 sun.gif ---
         levelIconContainer.innerHTML = '<img src="sun.gif" alt="Sun" style="width: 100%; height: 100%; object-fit: contain;">';
         
         starsCountEl.textContent = 0;
@@ -493,6 +492,7 @@
         function startLevel() {
             if (currentLevelIndex === 0) {
                 totalStars = 0;
+                failedTasks = [];
                 starsCountEl.textContent = 0;
             }
 
@@ -531,21 +531,28 @@
                     progressBar.style.background = 'linear-gradient(to bottom, #FF9AA2, #FFB7C5)';
                 }
 
-                if (elapsed > TIME_LIMIT) { timerEl.style.color = '#D35400'; } else { timerEl.style.color = '#8D7B68'; }
+                if (elapsed > TIME_LIMIT) { 
+                    timerEl.style.color = '#D35400';
+                    timerEl.textContent = formatTime(elapsed) + " (超時)";
+                } else { 
+                    timerEl.style.color = '#8D7B68'; 
+                }
             }, 1000);
         }
 
         function finishLevelAndAutoStartNext() {
             clearInterval(timerInterval);
             const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
-            let starsEarned = 0;
+            
+            // 規則 1: 單項需於 5 分鐘 (300秒) 內完成
             if (elapsedSeconds <= TIME_LIMIT) {
-                starsEarned = 1;
-                const savedSeconds = TIME_LIMIT - elapsedSeconds;
-                const speedBonus = Math.floor(savedSeconds / 60);
-                starsEarned += speedBonus;
-                updateStars(starsEarned);
+                // 完成給 1 顆星
+                updateStars(1);
+            } else {
+                // 超時不給星，並記錄
+                failedTasks.push(levels[currentLevelIndex].name);
             }
+
             currentLevelIndex++;
             if (currentLevelIndex < levels.length) { startLevel(); } else { endGame(); }
         }
@@ -554,22 +561,49 @@
             isRunning = false;
             gameFinished = true;
             const now = new Date();
-            const targetTime = new Date();
-            targetTime.setHours(6, 50, 0);
+            const deadline = new Date();
+            deadline.setHours(6, 50, 0); // 設定死線為今天 6:50
 
-            let isEarlyBird = false;
-            let bonusText = "";
-            if (now < targetTime) {
-                updateStars(5);
-                isEarlyBird = true;
-                bonusText = "早鳥 +5 顆星！";
+            let finalTitle = "";
+            let finalMessage = "";
+            let isPerfect = false;
+
+            // 規則 2: 若超過 6:50，取消所有星星
+            if (now > deadline) {
+                totalStars = 0;
+                starsCountEl.textContent = 0;
+                finalTitle = "再接再厲";
+                finalMessage = "超過 6:50 囉！明天早點開始吧！";
+                levelIconContainer.innerHTML = `<div class="level-sticker">⏰</div>`;
+            } else {
+                // 6:50 之前完成
+                if (failedTasks.length === 0) {
+                    // 規則 4: 每項皆在 5 分鐘內完成，星星加倍
+                    totalStars = totalStars * 2;
+                    starsCountEl.textContent = totalStars;
+                    isPerfect = true;
+                    finalTitle = "做得好！";
+                    finalMessage = "全部都在時間內完成，星星加倍！\n太棒了！";
+                    levelIconContainer.innerHTML = `<div class="level-sticker">🎉</div>`;
+                    startConfetti();
+                } else {
+                    // 有項目超時，但不扣除已獲得的星星
+                    finalTitle = "做得好！";
+                    finalMessage = "雖然有項目超時，但準時完成了！";
+                    levelIconContainer.innerHTML = `<div class="level-sticker">👍</div>`;
+                    startConfetti();
+                }
             }
 
-            saveDailyRecord(totalStars, isEarlyBird);
+            // 規則 3 & 5: 顯示失敗項目與最後訊息
+            if (failedTasks.length > 0) {
+                finalMessage += "\n\n超時項目：\n" + failedTasks.join("、");
+            }
 
-            levelNameEl.textContent = "挑戰成功！";
-            levelIconContainer.innerHTML = `<div class="level-sticker">🎉</div>`;
-            timerEl.textContent = `太棒了！ ${bonusText}`;
+            saveDailyRecord(totalStars, isPerfect);
+
+            levelNameEl.textContent = finalTitle;
+            timerEl.textContent = finalMessage;
             document.querySelector('.progress-bar-wrap').style.display = 'none';
             
             btnEl.innerHTML = "明天見";
@@ -579,15 +613,15 @@
             btnEl.classList.remove('finish');
             btnEl.classList.add('tomorrow-btn'); 
             
-            speak(`恭喜！獲得了 ${totalStars} 顆星星！`);
-            startConfetti();
+            speak(`${finalTitle}，獲得了 ${totalStars} 顆星星！`);
         }
 
-        function saveDailyRecord(stars, isEarly) {
+        function saveDailyRecord(stars, isPerfect) {
             const today = new Date();
             const dateKey = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
             let calendarData = JSON.parse(localStorage.getItem('beibei_calendar') || "{}");
-            calendarData[dateKey] = { done: true, stars: stars, early: isEarly };
+            // early 欄位現在用來存是否完美達成 (星星加倍)
+            calendarData[dateKey] = { done: true, stars: stars, early: isPerfect };
             localStorage.setItem('beibei_calendar', JSON.stringify(calendarData));
             renderCalendar();
             renderWeeklyStats();
